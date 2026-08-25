@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-26T00:00:00.000Z",
+  "fonts": [
+    {
+      "name": "Noto Sans KR Regular",
+      "filename": "NotoSansKR-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/SubsetOTF/KR/NotoSansKR-Regular.otf",
+      "sha256": "69975a0ac8472717870aefeab0a4d52739308d90856b9955313b2ad5e0148d68",
+      "bytes": 4644748,
+      "license": "OFL-1.1",
+      "attribution": "Copyright 2014 Google LLC — SIL Open Font License 1.1"
+    },
+    {
+      "name": "Noto Emoji Variable",
+      "filename": "NotoEmoji-Variable.ttf",
+      "url": "https://raw.githubusercontent.com/googlefonts/noto-emoji/8998f5dd683424a73e2314a8c1f1e359c19e8742/fonts/NotoColorEmoji.ttf",
+      "sha256": "72a635cb3d2f3524c51620cdde406b217204e8a6a06c6a096ff8ed4b5fd6e27b",
+      "bytes": 10673480,
+      "license": "OFL-1.1",
+      "attribution": "Copyright 2013 Google LLC — SIL Open Font License 1.1"
+    }
+  ],
+  "licenseFile": "OFL.txt",
+  "licenseSha256": "52de6153315fc38d556adfa8f523d6e492f4ad81ee0252726d3e92f25bbb3b56",
+  "notes": "Immutable pinned commits: noto-cjk f8d157532fbfaeda587e826d4cd5b21a49186f7c, noto-emoji 8998f5dd683424a73e2314a8c1f1e359c19e8742. URLs contain 40-char commit hash, not mutable /main/. Verification is offline SHA-256 only."
+}

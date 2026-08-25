@@ -50,6 +50,7 @@
   },
   "files": [
     "dist",
+    "assets",
     "LICENSE",
     "NOTICE",
     "THIRD_PARTY_LICENSES.md",
@@ -65,7 +66,9 @@
     "build": "tsc -p tsconfig.build.json",
     "test": "bun test",
     "check": "biome check .",
-    "format": "biome format --write ./src"
+    "format": "biome format --write ./src",
+    "fonts:verify": "bun run scripts/vendor-fonts.ts",
+    "fonts:vendor": "bun run scripts/vendor-fonts.ts --fetch"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",
