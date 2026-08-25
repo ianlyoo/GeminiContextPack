@@ -1,6 +1,8 @@
 /**
- * Accounting placeholder — provenance-safe records will be implemented
- * in a later todo.
+ * Accounting — provenance-safe records and comparison.
+ * Re-exports types, validators, creators, and comparison logic.
  */
 
-export { PACKAGE_NAME, VERSION } from "../index.js";
+export * from "./comparison.js";
+export * from "./records.js";
+export * from "./types.js";
