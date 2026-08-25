@@ -1,0 +1,51 @@
+# live-smoke — manual dispatch only, credential-safe opt-in Gemini smoke
+# Must NOT run on push/pull_request. Requires explicit workflow_dispatch + GEMINI_API_KEY secret.
+# Required CI (ci.yml) must not reference this workflow or its secret.
+
+name: live-smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Gemini model id (default gemini-2.5-flash)"
+        required: false
+        default: "gemini-2.5-flash"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Extra guard: only run when dispatched manually; secrets.GEMINI_API_KEY must be set
+    # by repository owner via workflow_dispatch input — never on PR/push.
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install (frozen)
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck + build
+        run: |
+          bun run typecheck
+          bun run build
+
+      - name: Run opt-in live smoke (requires GEMINI_API_KEY + --run-live)
+        run: |
+          if [ -z "${GEMINI_API_KEY}" ]; then
+            echo "[live-smoke] SKIP: GEMINI_API_KEY not set — no network call"
+            exit 0
+          fi
+          # Credential-safe: key is env-only, never echoed; output is redacted
+          bun run benchmarks/live-gemini.ts -- --run-live --model "${{ inputs.model }}"
