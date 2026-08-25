@@ -68,7 +68,9 @@
     "check": "biome check .",
     "format": "biome format --write ./src",
     "fonts:verify": "bun run scripts/vendor-fonts.ts",
-    "fonts:vendor": "bun run scripts/vendor-fonts.ts --fetch"
+    "fonts:vendor": "bun run scripts/vendor-fonts.ts --fetch",
+    "evidence:verify": "bun run scripts/verify-evidence.ts",
+    "evidence:build": "bun run scripts/build-results.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",

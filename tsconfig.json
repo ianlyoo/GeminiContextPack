@@ -26,6 +26,8 @@
     "skipLibCheck": true,
     "useUnknownInCatchVariables": true,
     "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "types": ["bun-types"]
   },
   "include": ["src/**/*", "test/**/*"],

@@ -1,0 +1,140 @@
+{
+  "method": "pdf",
+  "model": "gemini-3.5-flash",
+  "target_tokens": 5000,
+  "corpus_stats": {
+    "char_count": 20672,
+    "est_tokens": 5168.0,
+    "line_count": 106
+  },
+  "markers": {
+    "PF_CHECK_A": "PF_CHECK_A=A043BAE1_6038",
+    "PF_CHECK_B": "PF_CHECK_B=03A839C0_CB52",
+    "PF_CHECK_C": "PF_CHECK_C=F511D9CB_8F68",
+    "REMOTE_FACT_ALPHA": "REMOTE_FACT_ALPHA=D9D9B0",
+    "REMOTE_FACT_BETA": "REMOTE_FACT_BETA=341314"
+  },
+  "pdf_file": "corpus_5000_pdf_42.pdf",
+  "pdf_size_bytes": 10053,
+  "pdf_pages": 1,
+  "pdf_used_font": 2.0,
+  "pdf_wrapped_lines": 109,
+  "pdf_local_verify": {
+    "extracted_len": 20674,
+    "original_len": 20672,
+    "ratio": 1.0000967492260062,
+    "missing": [],
+    "pages": 1
+  },
+  "media_resolution": "MEDIA_RESOLUTION_HIGH",
+  "count_tokens": {
+    "raw": {
+      "sdk_http_response": {
+        "headers": {
+          "content-type": "application/json; charset=UTF-8",
+          "vary": "Origin, X-Origin, Referer",
+          "content-encoding": "gzip",
+          "date": "Tue, 25 Aug 2026 08:43:17 GMT",
+          "server": "scaffolding on HTTPServer2",
+          "x-xss-protection": "0",
+          "x-frame-options": "SAMEORIGIN",
+          "x-content-type-options": "nosniff",
+          "server-timing": "gfet4t7; dur=240",
+          "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+          "transfer-encoding": "chunked"
+        },
+        "body": null
+      },
+      "total_tokens": 598,
+      "cached_content_token_count": null
+    },
+    "total_tokens": 598
+  },
+  "count_tokens_latency": 0.3443577289581299,
+  "usage": {
+    "raw": {
+      "cache_tokens_details": null,
+      "cached_content_token_count": null,
+      "candidates_token_count": 153,
+      "candidates_tokens_details": null,
+      "prompt_token_count": 1228,
+      "prompt_tokens_details": [
+        {
+          "modality": "TEXT",
+          "token_count": 136
+        },
+        {
+          "modality": "IMAGE",
+          "token_count": 1092
+        }
+      ],
+      "thoughts_token_count": 871,
+      "tool_use_prompt_token_count": null,
+      "tool_use_prompt_tokens_details": null,
+      "total_token_count": 2252,
+      "traffic_type": null
+    },
+    "prompt_token_count": 1228,
+    "candidates_token_count": 153,
+    "total_token_count": 2252,
+    "cached_content_token_count": null,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 136
+      },
+      {
+        "modality": "IMAGE",
+        "token_count": 1092
+      }
+    ],
+    "candidates_tokens_details": null,
+    "thoughts_token_count": 871,
+    "prompt_tokens_details_dump": "[ModalityTokenCount(\n  modality=<MediaModality.TEXT: 'TEXT'>,\n  token_count=136\n), ModalityTokenCount(\n  modality=<MediaModality.IMAGE: 'IMAGE'>,\n  token_count=1092\n)]"
+  },
+  "latency": 4.625450611114502,
+  "response_text": "```json\n{\n  \"PF_CHECK_A\": \"PF_CHECK_A=A043BAE1_6038\",\n  \"PF_CHECK_B\": \"PF_CHECK_B=03A839C0_CB52\",\n  \"PF_CHECK_C\": \"PF_CHECK_C=F511D9CB_8F68\",\n  \"REMOTE_FACT_ALPHA\": \"D9D9B0\",\n  \"REMOTE_FACT_BETA\": \"341314\",\n  \"COMBINED\": \"D9D9B0/341314\"\n}\n```",
+  "retrieval": {
+    "PF_CHECK_A": {
+      "expected": "PF_CHECK_A=A043BAE1_6038",
+      "value": "A043BAE1_6038",
+      "found_full": true,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "PF_CHECK_B": {
+      "expected": "PF_CHECK_B=03A839C0_CB52",
+      "value": "03A839C0_CB52",
+      "found_full": true,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "PF_CHECK_C": {
+      "expected": "PF_CHECK_C=F511D9CB_8F68",
+      "value": "F511D9CB_8F68",
+      "found_full": true,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "REMOTE_FACT_ALPHA": {
+      "expected": "REMOTE_FACT_ALPHA=D9D9B0",
+      "value": "D9D9B0",
+      "found_full": false,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "REMOTE_FACT_BETA": {
+      "expected": "REMOTE_FACT_BETA=341314",
+      "value": "341314",
+      "found_full": false,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "COMBINED_EXPECTED": "D9D9B0/341314",
+    "COMBINED_FOUND": true,
+    "overall_pass": true
+  },
+  "timestamp": "2026-08-25T08:43:22.693548",
+  "sdk_version": "1.67.0",
+  "model_version": "gemini-3.5-flash"
+}

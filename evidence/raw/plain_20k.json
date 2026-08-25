@@ -1,0 +1,124 @@
+{
+  "method": "plaintext",
+  "model": "gemini-3.5-flash",
+  "target_tokens": 20000,
+  "corpus_stats": {
+    "char_count": 80657,
+    "est_tokens": 20164.25,
+    "line_count": 399
+  },
+  "markers": {
+    "PF_CHECK_A": "PF_CHECK_A=A043BAE1_6038",
+    "PF_CHECK_B": "PF_CHECK_B=03A839C0_CB52",
+    "PF_CHECK_C": "PF_CHECK_C=F511D9CB_8F68",
+    "REMOTE_FACT_ALPHA": "REMOTE_FACT_ALPHA=D9D9B0",
+    "REMOTE_FACT_BETA": "REMOTE_FACT_BETA=341314"
+  },
+  "count_tokens": {
+    "raw": {
+      "sdk_http_response": {
+        "headers": {
+          "content-type": "application/json; charset=UTF-8",
+          "vary": "Origin, X-Origin, Referer",
+          "content-encoding": "gzip",
+          "date": "Tue, 25 Aug 2026 08:41:57 GMT",
+          "server": "scaffolding on HTTPServer2",
+          "x-xss-protection": "0",
+          "x-frame-options": "SAMEORIGIN",
+          "x-content-type-options": "nosniff",
+          "server-timing": "gfet4t7; dur=208",
+          "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+          "transfer-encoding": "chunked"
+        },
+        "body": null
+      },
+      "total_tokens": 20510,
+      "cached_content_token_count": null
+    },
+    "total_tokens": 20510
+  },
+  "count_tokens_latency": 0.32264113426208496,
+  "usage": {
+    "raw": {
+      "cache_tokens_details": [
+        {
+          "modality": "TEXT",
+          "token_count": 16358
+        }
+      ],
+      "cached_content_token_count": 16358,
+      "candidates_token_count": 153,
+      "candidates_tokens_details": null,
+      "prompt_token_count": 20704,
+      "prompt_tokens_details": [
+        {
+          "modality": "TEXT",
+          "token_count": 20704
+        }
+      ],
+      "thoughts_token_count": 938,
+      "tool_use_prompt_token_count": null,
+      "tool_use_prompt_tokens_details": null,
+      "total_token_count": 21795,
+      "traffic_type": null
+    },
+    "prompt_token_count": 20704,
+    "candidates_token_count": 153,
+    "total_token_count": 21795,
+    "cached_content_token_count": 16358,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 20704
+      }
+    ],
+    "candidates_tokens_details": null,
+    "thoughts_token_count": 938,
+    "prompt_tokens_details_dump": "[ModalityTokenCount(\n  modality=<MediaModality.TEXT: 'TEXT'>,\n  token_count=20704\n)]"
+  },
+  "latency": 6.6327805519104,
+  "response_text": "```json\n{\n  \"PF_CHECK_A\": \"PF_CHECK_A=A043BAE1_6038\",\n  \"PF_CHECK_B\": \"PF_CHECK_B=03A839C0_CB52\",\n  \"PF_CHECK_C\": \"PF_CHECK_C=F511D9CB_8F68\",\n  \"REMOTE_FACT_ALPHA\": \"D9D9B0\",\n  \"REMOTE_FACT_BETA\": \"341314\",\n  \"COMBINED\": \"D9D9B0/341314\"\n}\n```",
+  "retrieval": {
+    "PF_CHECK_A": {
+      "expected": "PF_CHECK_A=A043BAE1_6038",
+      "value": "A043BAE1_6038",
+      "found_full": true,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "PF_CHECK_B": {
+      "expected": "PF_CHECK_B=03A839C0_CB52",
+      "value": "03A839C0_CB52",
+      "found_full": true,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "PF_CHECK_C": {
+      "expected": "PF_CHECK_C=F511D9CB_8F68",
+      "value": "F511D9CB_8F68",
+      "found_full": true,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "REMOTE_FACT_ALPHA": {
+      "expected": "REMOTE_FACT_ALPHA=D9D9B0",
+      "value": "D9D9B0",
+      "found_full": false,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "REMOTE_FACT_BETA": {
+      "expected": "REMOTE_FACT_BETA=341314",
+      "value": "341314",
+      "found_full": false,
+      "found_val": true,
+      "found_in_output": true
+    },
+    "COMBINED_EXPECTED": "D9D9B0/341314",
+    "COMBINED_FOUND": true,
+    "overall_pass": true
+  },
+  "timestamp": "2026-08-25T08:42:04.511988",
+  "sdk_version": "1.67.0",
+  "model_version": "gemini-3.5-flash"
+}

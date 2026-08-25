@@ -53,6 +53,9 @@
           },
           "correctness": {
             "noUnusedVariables": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
           }
         }
       }

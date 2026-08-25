@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-25T15:42:59.357Z",
+  "description": "Derived qualified reports — provider-reported input usage only, no cost/invoice claims",
+  "branding": "GeminiContextPack",
+  "limitations": "Synthetic corpus seed=42; one run per condition; model gemini-3.5-flash with MEDIA_RESOLUTION_LOW for primary PDF; provider-reported input tokens (usage.prompt_token_count) only; no invoice, no dollar cost, no savings claim; retrieval is substring match; cachedContentTokenCount varies by run; policy and pricing subject to change.",
+  "model_primary": "gemini-3.5-flash",
+  "media_resolution_primary": "MEDIA_RESOLUTION_LOW",
+  "api_endpoint": "generativelanguage.googleapis.com",
+  "SDK": "google-genai JS SDK",
+  "provenance": {
+    "notice": "Every numeric field below is traceable to raw evidence via SHA-256 and JSON path; raw bytes are never rewritten.",
+    "raw_manifest": "evidence/manifest.json"
+  },
+  "summary": {
+    "5000": {
+      "target_tokens": 5000,
+      "plain": {
+        "prompt_token_count": 5419,
+        "total_token_count": 6470,
+        "source": {
+          "filename": "plain_5k.json",
+          "path": "evidence/raw/plain_5k.json",
+          "sha256": "940c31d2c6f4bf1f5af3e780c9196b2782bb0593fbe96c4469cdf31c3d873111",
+          "jsonPath": "usage.prompt_token_count"
+        }
+      },
+      "pdf": {
+        "prompt_token_count": 402,
+        "total_token_count": 1340,
+        "prompt_tokens_details": [
+          {
+            "modality": "TEXT",
+            "token_count": 136
+          },
+          {
+            "modality": "IMAGE",
+            "token_count": 266
+          }
+        ],
+        "source": {
+          "filename": "pdf_5k.json",
+          "path": "evidence/raw/pdf_5k.json",
+          "sha256": "20513793f07e81a0e9a6cb2fa1ae5442f5636518293c4bdb465bfcb54aa3da54",
+          "jsonPath": "usage.prompt_token_count"
+        }
+      },
+      "effective_input_ratio": 0.074183428677,
+      "reduction": 0.925816571323,
+      "trace": {
+        "plain_sha256": "940c31d2c6f4bf1f5af3e780c9196b2782bb0593fbe96c4469cdf31c3d873111",
+        "pdf_sha256": "20513793f07e81a0e9a6cb2fa1ae5442f5636518293c4bdb465bfcb54aa3da54",
+        "plain_json_path": "evidence/raw/plain_5k.json -> usage.prompt_token_count",
+        "pdf_json_path": "evidence/raw/pdf_5k.json -> usage.prompt_token_count"
+      }
+    },
+    "20000": {
+      "target_tokens": 20000,
+      "plain": {
+        "prompt_token_count": 20704,
+        "total_token_count": 21795,
+        "source": {
+          "filename": "plain_20k.json",
+          "path": "evidence/raw/plain_20k.json",
+          "sha256": "bf24aadd77e5618514abebf3338c2360ee252a635c94bceb6f92b2821eea5be3",
+          "jsonPath": "usage.prompt_token_count"
+        }
+      },
+      "pdf": {
+        "prompt_token_count": 402,
+        "total_token_count": 1441,
+        "prompt_tokens_details": [
+          {
+            "modality": "TEXT",
+            "token_count": 136
+          },
+          {
+            "modality": "IMAGE",
+            "token_count": 266
+          }
+        ],
+        "source": {
+          "filename": "pdf_20k.json",
+          "path": "evidence/raw/pdf_20k.json",
+          "sha256": "0ac77f528c6dbb4e6220b6b3c27f9a98c0677ab882221fabe6a4b132481abca4",
+          "jsonPath": "usage.prompt_token_count"
+        }
+      },
+      "effective_input_ratio": 0.019416537867,
+      "reduction": 0.980583462133,
+      "trace": {
+        "plain_sha256": "bf24aadd77e5618514abebf3338c2360ee252a635c94bceb6f92b2821eea5be3",
+        "pdf_sha256": "0ac77f528c6dbb4e6220b6b3c27f9a98c0677ab882221fabe6a4b132481abca4",
+        "plain_json_path": "evidence/raw/plain_20k.json -> usage.prompt_token_count",
+        "pdf_json_path": "evidence/raw/pdf_20k.json -> usage.prompt_token_count"
+      }
+    },
+    "50000": {
+      "target_tokens": 50000,
+      "plain": {
+        "prompt_token_count": 51393,
+        "total_token_count": 52247,
+        "source": {
+          "filename": "plain_50k.json",
+          "path": "evidence/raw/plain_50k.json",
+          "sha256": "0bc18322c2618a85f17e476dcf544e62a76240ebc2c03941d423d6e87365686c",
+          "jsonPath": "usage.prompt_token_count"
+        }
+      },
+      "pdf": {
+        "prompt_token_count": 402,
+        "total_token_count": 1608,
+        "prompt_tokens_details": [
+          {
+            "modality": "TEXT",
+            "token_count": 136
+          },
+          {
+            "modality": "IMAGE",
+            "token_count": 266
+          }
+        ],
+        "source": {
+          "filename": "pdf_50k.json",
+          "path": "evidence/raw/pdf_50k.json",
+          "sha256": "db2b25ea3e5935c93d6946c400d086eae7a143e5eea9bb5262d871760866ef98",
+          "jsonPath": "usage.prompt_token_count"
+        }
+      },
+      "effective_input_ratio": 0.007822076937,
+      "reduction": 0.992177923063,
+      "trace": {
+        "plain_sha256": "0bc18322c2618a85f17e476dcf544e62a76240ebc2c03941d423d6e87365686c",
+        "pdf_sha256": "db2b25ea3e5935c93d6946c400d086eae7a143e5eea9bb5262d871760866ef98",
+        "plain_json_path": "evidence/raw/plain_50k.json -> usage.prompt_token_count",
+        "pdf_json_path": "evidence/raw/pdf_50k.json -> usage.prompt_token_count"
+      }
+    }
+  },
+  "raw_files": {
+    "plain_5k": "evidence/raw/plain_5k.json (940c31d2c6f4…)",
+    "pdf_5k": "evidence/raw/pdf_5k.json (20513793f07e…)",
+    "plain_20k": "evidence/raw/plain_20k.json (bf24aadd77e5…)",
+    "pdf_20k": "evidence/raw/pdf_20k.json (0ac77f528c6d…)",
+    "plain_50k": "evidence/raw/plain_50k.json (0bc18322c261…)",
+    "pdf_50k": "evidence/raw/pdf_50k.json (db2b25ea3e59…)"
+  },
+  "notes": [
+    "Provider-reported input usage only — no invoice, no dollar cost, no savings claim.",
+    "Each prompt_token_count is read directly from raw evidence JSON at usage.prompt_token_count; derived ratios are computed, not measured.",
+    "Raw bytes in evidence/raw are byte-identical to private source; see evidence/manifest.json for SHA-256 and sourcePath.",
+    "Synthetic corpus, seed 42, deterministic; one run per condition; not a guarantee across models, resolutions, or workloads."
+  ]
+}
