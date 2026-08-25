@@ -1,0 +1,75 @@
+{
+  "name": "gemini-context-pack",
+  "version": "0.1.0",
+  "description": "Gemini API context optimizer using native PDF packaging — reduce reported input tokens by up to 99% in measured long-context workloads.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "ianlyoo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ianlyoo/GeminiContextPack.git"
+  },
+  "homepage": "https://github.com/ianlyoo/GeminiContextPack",
+  "bugs": {
+    "url": "https://github.com/ianlyoo/GeminiContextPack/issues"
+  },
+  "keywords": [
+    "gemini-api",
+    "google-gemini",
+    "native-pdf",
+    "long-context",
+    "context-window",
+    "context-optimization",
+    "token-optimization",
+    "pdf",
+    "typescript",
+    "llm",
+    "prompt-engineering",
+    "developer-tools"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.js"
+    },
+    "./gemini": {
+      "types": "./dist/gemini/index.d.ts",
+      "import": "./dist/gemini/index.js"
+    },
+    "./accounting": {
+      "types": "./dist/accounting/index.d.ts",
+      "import": "./dist/accounting/index.js"
+    }
+  },
+  "bin": {
+    "gemini-context-pack": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE",
+    "THIRD_PARTY_LICENSES.md",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "bun test",
+    "check": "biome check .",
+    "format": "biome format --write ./src"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.0",
+    "bun-types": "^1.3.14",
+    "typescript": "^5.9.2"
+  }
+}

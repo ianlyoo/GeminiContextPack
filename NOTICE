@@ -1,0 +1,20 @@
+GeminiContextPack
+Copyright 2026 ianlyoo
+
+This product is licensed under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+This product includes the following third-party components
+governed by their respective licenses. See THIRD_PARTY_LICENSES.md
+for the full license texts and attributions.
+
+  - Noto Sans CJK KR (Noto Sans KR) — SIL Open Font License 1.1
+  - Noto Emoji — SIL Open Font License 1.1
+  - pdf-lib — MIT License
+  - @pdf-lib/fontkit (fontkit) — MIT License
+  - pdfjs-dist — Apache License 2.0
+  - TypeScript — Apache License 2.0
+  - Biome — MIT License
+  - Bun — MIT License
