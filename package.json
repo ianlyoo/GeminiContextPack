@@ -72,7 +72,8 @@
     "evidence:verify": "bun run scripts/verify-evidence.ts",
     "evidence:build": "bun run scripts/build-results.ts",
     "bench:offline": "bun run benchmarks/offline.ts",
-    "test:live": "bun run benchmarks/live-gemini.ts"
+    "test:live": "bun run benchmarks/live-gemini.ts",
+    "docs:check": "bun run scripts/docs-check.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",

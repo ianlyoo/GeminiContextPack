@@ -1,0 +1,55 @@
+{
+  "@context": "https://doi.org/10.5438/crossref",
+  "@type": "SoftwareSourceCode",
+  "name": "GeminiContextPack",
+  "description": "Gemini API context optimizer using native PDF packaging — reduce reported input tokens by up to 99% in measured long-context workloads.",
+  "version": "0.1.0",
+  "license": "https://spdx.org/licenses/Apache-2.0",
+  "codeRepository": "https://github.com/ianlyoo/GeminiContextPack",
+  "url": "https://github.com/ianlyoo/GeminiContextPack",
+  "homepage": "https://ianlyoo.github.io/GeminiContextPack/",
+  "issueTracker": "https://github.com/ianlyoo/GeminiContextPack/issues",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Ian",
+      "familyName": "Yoo",
+      "alternateName": "ianlyoo"
+    }
+  ],
+  "provider": {
+    "@type": "Person",
+    "givenName": "Ian",
+    "familyName": "Yoo",
+    "alternateName": "ianlyoo"
+  },
+  "programmingLanguage": "TypeScript",
+  "runtimePlatform": "Node.js >=18, Bun >=1",
+  "keywords": [
+    "gemini-api",
+    "google-gemini",
+    "native-pdf",
+    "long-context",
+    "context-window",
+    "context-optimization",
+    "token-optimization",
+    "pdf",
+    "typescript",
+    "llm",
+    "prompt-engineering",
+    "developer-tools"
+  ],
+  "applicationCategory": "developer-tools",
+  "operatingSystem": "Cross-platform",
+  "datePublished": "2026-08-25",
+  "dateCreated": "2026-08-25",
+  "citation": [
+    {
+      "@type": "ScholarlyArticle",
+      "description": "Evidence — provider-reported input tokens (synthetic seed 42, one run per condition, gemini-2.5-flash / MEDIA_RESOLUTION_LOW, no invoice)",
+      "url": "https://github.com/ianlyoo/GeminiContextPack/blob/main/evidence/results.json"
+    }
+  ],
+  "isAccessibleForFree": true,
+  "funding": "Not an official Google product. Not affiliated with Google."
+}

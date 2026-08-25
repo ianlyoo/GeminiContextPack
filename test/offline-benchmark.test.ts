@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { createHash } from "node:crypto";
 import {
   copyFileSync,
@@ -14,7 +14,6 @@ import { join } from "node:path";
 import { generateSeed42Corpus, runOfflineBenchmark } from "../benchmarks/offline";
 import {
   observationsDeterministicallyEqual,
-  validateOfflineBenchmarkReport,
   validateOfflineObservationRecord,
 } from "../benchmarks/schema";
 
@@ -95,11 +94,27 @@ describe("offline benchmark — deterministic seed42 compile/verify", () => {
   });
 
   test("happy — report trace resolves 5419/402, 20704/402, 51393/402 to raw SHA+JSON paths", () => {
-    const manifest = JSON.parse(readFileSync(join(PRODUCT_ROOT, "evidence", "manifest.json"), "utf8")) as {
+    const manifest = JSON.parse(
+      readFileSync(join(PRODUCT_ROOT, "evidence", "manifest.json"), "utf8")
+    ) as {
       artifacts: Array<{ filename: string; sha256: string; path: string }>;
     };
-    const results = JSON.parse(readFileSync(join(PRODUCT_ROOT, "evidence", "results.json"), "utf8")) as {
-      summary: Record<string, { plain: { prompt_token_count: number; source: { sha256: string; path: string; jsonPath: string } }; pdf: { prompt_token_count: number; source: { sha256: string; path: string; jsonPath: string } } }>;
+    const results = JSON.parse(
+      readFileSync(join(PRODUCT_ROOT, "evidence", "results.json"), "utf8")
+    ) as {
+      summary: Record<
+        string,
+        {
+          plain: {
+            prompt_token_count: number;
+            source: { sha256: string; path: string; jsonPath: string };
+          };
+          pdf: {
+            prompt_token_count: number;
+            source: { sha256: string; path: string; jsonPath: string };
+          };
+        }
+      >;
     };
     // Must resolve expected numbers
     expect(results.summary["5000"]!.plain.prompt_token_count).toBe(5419);
@@ -116,13 +131,18 @@ describe("offline benchmark — deterministic seed42 compile/verify", () => {
         const src = entry[side].source;
         expect(src.sha256).toMatch(/^[0-9a-f]{64}$/);
         expect(src.jsonPath).toBe("usage.prompt_token_count");
-        expect(src.path).toBe(`evidence/raw/${side}_${scale === "5000" ? "5k" : scale === "20000" ? "20k" : "50k"}.json`);
+        expect(src.path).toBe(
+          `evidence/raw/${side}_${scale === "5000" ? "5k" : scale === "20000" ? "20k" : "50k"}.json`
+        );
         // SHA must match manifest
         const art = manifest.artifacts.find((a) => a.path === src.path);
         expect(art).toBeDefined();
         expect(art!.sha256).toBe(src.sha256);
         // Raw file JSON at path must have that value
-        const raw = JSON.parse(readFileSync(join(PRODUCT_ROOT, src.path), "utf8")) as Record<string, unknown>;
+        const raw = JSON.parse(readFileSync(join(PRODUCT_ROOT, src.path), "utf8")) as Record<
+          string,
+          unknown
+        >;
         const usage = raw["usage"] as Record<string, unknown>;
         expect(usage["prompt_token_count"]).toBe(entry[side].prompt_token_count);
         // No invoice/cost claim in results
@@ -155,13 +175,17 @@ describe("offline benchmark — deterministic seed42 compile/verify", () => {
       writeFileSync(target, JSON.stringify(raw, null, 2));
       const mutatedBytes = readFileSync(target);
       const mutatedSha = sha256Hex(mutatedBytes);
-      expect(mutatedSha).not.toBe(manifest.artifacts.find((a) => a.filename === "plain_5k.json")!.sha256);
+      expect(mutatedSha).not.toBe(
+        manifest.artifacts.find((a) => a.filename === "plain_5k.json")!.sha256
+      );
 
       // Build-results should fail provenance before emitting report — simulate via verifyRawIntegrity logic
       // We invoke buildResults with manipulated productRoot by temporarily patching PRODUCT_ROOT via direct check
       // Instead, we assert that manifest raw sha mismatch would be caught by verifyEvidence/provenance gate
       // Here we directly test the integrity check that build-results now performs:
-      const manifestAfter = JSON.parse(readFileSync(join(tmpEvidence, "manifest.json"), "utf8")) as typeof manifest;
+      const manifestAfter = JSON.parse(
+        readFileSync(join(tmpEvidence, "manifest.json"), "utf8")
+      ) as typeof manifest;
       const plainArt = manifestAfter.artifacts.find((a) => a.filename === "plain_5k.json")!;
       // Simulate verifyRawIntegrity failure
       const rawBytes = readFileSync(join(tmp, plainArt.path));
@@ -170,7 +194,9 @@ describe("offline benchmark — deterministic seed42 compile/verify", () => {
       // The build-results script would throw: raw integrity failed — ensure error message contains path/hash
       expect(() => {
         if (got !== plainArt.sha256) {
-          throw new Error(`raw integrity failed for ${plainArt.path}: manifest sha ${plainArt.sha256} vs file sha ${got}`);
+          throw new Error(
+            `raw integrity failed for ${plainArt.path}: manifest sha ${plainArt.sha256} vs file sha ${got}`
+          );
         }
       }).toThrow(/raw integrity failed/);
       expect(() => {

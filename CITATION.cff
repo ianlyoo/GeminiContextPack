@@ -1,0 +1,41 @@
+# This file is for citation metadata — https://citation-file-format.github.io/
+cff-version: 1.2.0
+message: "If you use GeminiContextPack, please cite it as below."
+title: "GeminiContextPack"
+abstract: "Gemini API context optimizer using native PDF packaging — reduce reported input tokens by up to 99% in measured long-context workloads."
+version: 0.1.0
+date-released: 2026-08-25
+license: Apache-2.0
+type: software
+authors:
+  - family-names: "Yoo"
+    given-names: "Ian"
+    alias: "ianlyoo"
+repository-code: "https://github.com/ianlyoo/GeminiContextPack"
+url: "https://github.com/ianlyoo/GeminiContextPack"
+homepage: "https://ianlyoo.github.io/GeminiContextPack/"
+keywords:
+  - gemini-api
+  - google-gemini
+  - native-pdf
+  - long-context
+  - context-window
+  - context-optimization
+  - token-optimization
+  - pdf
+  - typescript
+  - llm
+  - prompt-engineering
+  - developer-tools
+identifiers:
+  - type: url
+    value: "https://github.com/ianlyoo/GeminiContextPack"
+    description: "GitHub repository"
+  - type: url
+    value: "https://ianlyoo.github.io/GeminiContextPack/"
+    description: "GitHub Pages"
+references:
+  - type: report
+    title: "GeminiContextPack evidence — provider-reported input tokens (qualified, synthetic seed 42, one run per condition, gemini-2.5-flash / MEDIA_RESOLUTION_LOW, no invoice)"
+    url: "https://github.com/ianlyoo/GeminiContextPack/blob/main/evidence/results.json"
+    year: 2026

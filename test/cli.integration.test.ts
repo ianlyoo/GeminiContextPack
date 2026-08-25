@@ -2,8 +2,8 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const CLI_PATH = join(process.cwd(), "dist", "cli.js");
 
@@ -31,7 +31,7 @@ function assertNoLeak(obj: unknown, raw: string): void {
   expect(lower).not.toContain("apikey");
   expect(lower).not.toContain("api_key");
   // No stack trace pattern "at <file>:"
-  expect(JSON.stringify(obj)).not.toContain("\"stack\"");
+  expect(JSON.stringify(obj)).not.toContain('"stack"');
 }
 
 function make5kSource(): string {
@@ -87,7 +87,9 @@ describe("cli integration — task 12", () => {
       expect(pdfBytes.length).toBe(cJson.bytes as number);
       expect(pdfBytes.slice(0, 4).toString()).toBe("%PDF");
       // canonicalHash equals hashCanonical(source)
-      const expectedHash = createHash("sha256").update(source.replaceAll("\r\n", "\n").replaceAll("\r", "\n").normalize("NFC"), "utf8").digest("hex");
+      const expectedHash = createHash("sha256")
+        .update(source.replaceAll("\r\n", "\n").replaceAll("\r", "\n").normalize("NFC"), "utf8")
+        .digest("hex");
       expect(cJson.canonicalHash).toBe(expectedHash);
       // input preserved
       expect(readFileSync(input, "utf8")).toBe(inputStatBefore);
@@ -273,7 +275,9 @@ describe("cli integration — task 12", () => {
       expect(overflowSecond.status).toBe(2);
       const j2 = parseJson(overflowSecond.stderr);
       expect(j2.code).toBe("PAGE_BUDGET_EXCEEDED");
-      expect(createHash("sha256").update(readFileSync(smallPdf)).digest("hex")).toBe(smallHashBefore);
+      expect(createHash("sha256").update(readFileSync(smallPdf)).digest("hex")).toBe(
+        smallHashBefore
+      );
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

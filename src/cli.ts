@@ -1,14 +1,22 @@
 #!/usr/bin/env node
+
 /**
  * gemini-context-pack CLI — offline context packaging commands.
  * Uses Node parseArgs, bundled fonts only, no API key/provider/network options.
  * Success JSON to stdout, typed failure JSON to stderr, stable exit codes.
  */
 
-import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import { randomBytes } from "node:crypto";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, resolve } from "node:path";
 import { parseArgs } from "node:util";
-import { randomBytes } from "node:crypto";
 
 import { hashCanonical } from "./canonicalization.js";
 import { ContextPackError } from "./errors.js";
@@ -46,7 +54,7 @@ function emitUsage(message: string, details?: unknown): never {
 
 function helpText(): string {
   return [
-    "gemini-context-pack v" + VERSION,
+    `gemini-context-pack v${VERSION}`,
     "",
     "Usage: gemini-context-pack <command> [options]",
     "",
@@ -83,9 +91,10 @@ function verifyHelp(): string {
 }
 
 function inspectHelp(): string {
-  return ["Usage: gemini-context-pack inspect --pdf <file>", "  --pdf <file>          PDF artifact to inspect"].join(
-    "\n"
-  );
+  return [
+    "Usage: gemini-context-pack inspect --pdf <file>",
+    "  --pdf <file>          PDF artifact to inspect",
+  ].join("\n");
 }
 
 function parseOptionalPageBudget(raw: string | undefined): number | undefined {
@@ -121,15 +130,18 @@ async function withSuppressedPdfjs<T>(fn: () => Promise<T>): Promise<T> {
 async function getPdfPageCount(pdfBytes: Uint8Array): Promise<number> {
   return withSuppressedPdfjs(async () => {
     const mod = (await import("pdfjs-dist/legacy/build/pdf.mjs")) as unknown as {
-      getDocument: (src: unknown) => { promise: Promise<{ numPages: number; destroy: () => void }> };
+      getDocument: (src: unknown) => {
+        promise: Promise<{ numPages: number; destroy: () => void }>;
+      };
     };
     const data = new Uint8Array(pdfBytes);
     let doc: { numPages: number; destroy: () => void } | null = null;
     try {
-      const task = mod.getDocument({ data, disableWorker: true, isEvalSupported: false } as unknown as Record<
-        string,
-        unknown
-      >);
+      const task = mod.getDocument({
+        data,
+        disableWorker: true,
+        isEvalSupported: false,
+      } as unknown as Record<string, unknown>);
       const loaded = (await task.promise) as unknown as { numPages: number; destroy: () => void };
       doc = loaded;
       return loaded.numPages;
@@ -322,11 +334,15 @@ async function handleVerify(rawArgs: string[]): Promise<void> {
         bytes: pdfBytes.length,
       });
     } else {
-      emitFailure("INTEGRITY_MISMATCH", "Verification mismatch: expected source differs from extracted", {
-        expectedHash: report.expectedHash,
-        actualHash: report.extractedHash,
-        canonicalizationId: report.canonicalizationId,
-      });
+      emitFailure(
+        "INTEGRITY_MISMATCH",
+        "Verification mismatch: expected source differs from extracted",
+        {
+          expectedHash: report.expectedHash,
+          actualHash: report.extractedHash,
+          canonicalizationId: report.canonicalizationId,
+        }
+      );
     }
   } catch (err: unknown) {
     if (err instanceof ContextPackError) {
