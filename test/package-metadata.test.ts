@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-const pkg = await Bun.file("package.json").json() as Record<string, unknown>;
+const pkg = (await Bun.file("package.json").json()) as Record<string, unknown>;
 
 const EXPECTED_DESCRIPTION =
   "Gemini API context optimizer using native PDF packaging — reduce reported input tokens by up to 99% in measured long-context workloads.";
@@ -47,7 +47,9 @@ describe("package metadata", () => {
 
   test("exports — four subpaths", () => {
     const exportsMap = pkg["exports"] as Record<string, unknown>;
-    expect(Object.keys(exportsMap).sort()).toEqual([".", "./accounting", "./gemini", "./node"].sort());
+    expect(Object.keys(exportsMap).sort()).toEqual(
+      [".", "./accounting", "./gemini", "./node"].sort()
+    );
     expect(exportsMap["."]).toEqual({
       types: "./dist/index.d.ts",
       import: "./dist/index.js",
