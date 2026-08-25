@@ -9,8 +9,12 @@ import type { FontBundle, VerifiedArtifact } from "../src/types.js";
 function dummyFonts(): FontBundle {
   // Use real vendored font for deterministic rendering (contract layer previously accepted any bytes)
   try {
-    const regular = readFileSync(join(process.cwd(), "assets", "fonts", "NotoSansKR-Regular.ttf")) as unknown as Uint8Array;
-    const emoji = readFileSync(join(process.cwd(), "assets", "fonts", "NotoEmoji-Variable.ttf")) as unknown as Uint8Array;
+    const regular = readFileSync(
+      join(process.cwd(), "assets", "fonts", "NotoSansKR-Regular.ttf")
+    ) as unknown as Uint8Array;
+    const emoji = readFileSync(
+      join(process.cwd(), "assets", "fonts", "NotoEmoji-Variable.ttf")
+    ) as unknown as Uint8Array;
     return { regular, emoji };
   } catch {
     return { regular: new Uint8Array([1, 2, 3]) };

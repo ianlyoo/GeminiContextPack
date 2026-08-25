@@ -6,7 +6,7 @@ import { inflateSync } from "node:zlib";
 import { canonicalize, encodeTransport } from "../canonicalization.js";
 import { ContextPackError } from "../errors.js";
 import { extractCanonicalSource } from "./extract.js";
-import { planLayout, PAGE_WIDTH, PAGE_HEIGHT } from "./layout.js";
+import { PAGE_HEIGHT, PAGE_WIDTH, planLayout } from "./layout.js";
 import { renderTransportPdf } from "./render.js";
 
 function loadBundle(): { regular: Uint8Array; emoji?: Uint8Array } {
@@ -36,6 +36,7 @@ function decompressedPdfText(bytes: Uint8Array): string {
   // Extract FlateDecode streams and inflate
   const streamRe = /stream\r?\n([\s\S]*?)\r?\nendstream/g;
   let m: RegExpExecArray | null;
+  // biome-ignore lint/suspicious/noAssignInExpressions: loop pattern
   while ((m = streamRe.exec(latin)) !== null) {
     const compressed = Buffer.from(m[1] as string, "latin1");
     try {
@@ -141,7 +142,9 @@ describe("pdf/render — deterministic accessible PDFs", () => {
 
   test("happy — ordered column drawing left-to-right top-to-bottom not overlapping", async () => {
     // Use multi-line source to force multiple lines/columns — avoid spaces at wrap boundaries for deterministic join
-    const src = canonicalize(Array.from({ length: 80 }, (_, i) => `line${i}_helloworld_안녕`).join("\n"));
+    const src = canonicalize(
+      Array.from({ length: 80 }, (_, i) => `line${i}_helloworld_안녕`).join("\n")
+    );
     const transport = encodeTransport(canonicalize(src));
     const { pdfBytes, pageCount } = await renderTransportPdf(transport, fonts);
     expect(pageCount).toBeGreaterThanOrEqual(1);

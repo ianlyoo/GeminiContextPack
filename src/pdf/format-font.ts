@@ -32,16 +32,19 @@ function toUnicodeHex(codePoint: number): string {
  * Returns null if empty, throws if >255 distinct code points.
  */
 export function createZeroWidthFormatFont(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: pdf-lib untyped
   pdf: any,
-  codePoints: readonly number[],
+  codePoints: readonly number[]
 ): FormatFontResult | null {
   const unique = [...new Set(codePoints)];
   if (unique.length === 0) return null;
   if (unique.length > 255) {
     throw new ContextPackError(
-      { code: "PDF_LIMIT_EXCEEDED", details: { limit: "format codes <= 255", actual: unique.length } },
-      "PDF limit exceeded: too many format code points",
+      {
+        code: "PDF_LIMIT_EXCEEDED",
+        details: { limit: "format codes <= 255", actual: unique.length },
+      },
+      "PDF limit exceeded: too many format code points"
     );
   }
 
@@ -104,12 +107,15 @@ export function createZeroWidthFormatFont(
 /**
  * Encode a format code point as a single-byte PDF hex string for Tj.
  */
-export function encodeFormatCode(formatCodes: ReadonlyMap<number, number>, codePoint: number): unknown {
+export function encodeFormatCode(
+  formatCodes: ReadonlyMap<number, number>,
+  codePoint: number
+): unknown {
   const code = formatCodes.get(codePoint);
   if (code === undefined) {
     throw new ContextPackError(
       { code: "UNSUPPORTED_GLYPH", details: { codePoint, offset: 0 } },
-      `Missing format code for U+${codePoint.toString(16).toUpperCase()}`,
+      `Missing format code for U+${codePoint.toString(16).toUpperCase()}`
     );
   }
   return PDFHexString.of(code.toString(16).padStart(2, "0"));

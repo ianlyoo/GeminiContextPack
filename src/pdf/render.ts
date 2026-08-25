@@ -3,9 +3,25 @@
  * line-level ActualText, zero-width Type3 format font, fixed dates/metadata,
  * byte-stable output, reversible transport only, no hidden duplicates.
  */
-import { PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFOperatorNames, PDFRef } from "pdf-lib";
+
 import * as fontkit from "fontkit";
+import {
+  PDFDocument,
+  PDFHexString,
+  PDFName,
+  PDFNumber,
+  PDFOperator,
+  PDFOperatorNames,
+  type PDFRef,
+} from "pdf-lib";
 import { ContextPackError } from "../errors.js";
+import { findFirstCoverageMiss, requiredFontForChar } from "./font-coverage.js";
+import {
+  createZeroWidthFormatFont,
+  encodeFormatCode,
+  FORMAT_FONT_SENTINEL,
+} from "./format-font.js";
+import { CJK_PATTERN, EMOJI_PATTERN, segmentGraphemes } from "./graphemes.js";
 import {
   COLUMN_COUNT,
   COLUMN_GAP,
@@ -17,35 +33,40 @@ import {
   PAGE_WIDTH,
   planLayout,
 } from "./layout.js";
-import { segmentGraphemes, CJK_PATTERN, EMOJI_PATTERN } from "./graphemes.js";
-import { createZeroWidthFormatFont, encodeFormatCode, FORMAT_FONT_SENTINEL } from "./format-font.js";
-import { createTokenBuilder, groupIntoRuns, wrapMeasuredTokens, type TextToken } from "./runs.js";
-import { findFirstCoverageMiss, requiredFontForChar } from "./font-coverage.js";
+import { createTokenBuilder, groupIntoRuns, type TextToken, wrapMeasuredTokens } from "./runs.js";
 
 const FIXED_DATE = new Date("2023-01-01T00:00:00.000Z");
 const FIXED_PRODUCER = "gemini-context-pack";
 const FIXED_CREATOR = "gemini-context-pack";
 const FIXED_TITLE = "gemini-context-pack";
 
-function assertFonts(fonts: unknown): asserts fonts is { readonly regular: Uint8Array; readonly emoji?: Uint8Array } {
+function assertFonts(
+  fonts: unknown
+): asserts fonts is { readonly regular: Uint8Array; readonly emoji?: Uint8Array } {
   if (typeof fonts !== "object" || fonts === null) {
     throw new ContextPackError(
       { code: "INVALID_CONTEXT", details: { reason: "fonts required" } },
-      "Invalid context: fonts required",
+      "Invalid context: fonts required"
     );
   }
   const rec = fonts as Record<string, unknown>;
   const reg = rec.regular;
   if (!(reg instanceof Uint8Array) || reg.length === 0) {
     throw new ContextPackError(
-      { code: "INVALID_CONTEXT", details: { reason: "fonts.regular must be non-empty Uint8Array" } },
-      "Invalid context: fonts.regular required",
+      {
+        code: "INVALID_CONTEXT",
+        details: { reason: "fonts.regular must be non-empty Uint8Array" },
+      },
+      "Invalid context: fonts.regular required"
     );
   }
   if ("emoji" in rec && rec.emoji !== undefined && !(rec.emoji instanceof Uint8Array)) {
     throw new ContextPackError(
-      { code: "INVALID_CONTEXT", details: { reason: "fonts.emoji must be Uint8Array if provided" } },
-      "Invalid context: fonts.emoji invalid",
+      {
+        code: "INVALID_CONTEXT",
+        details: { reason: "fonts.emoji must be Uint8Array if provided" },
+      },
+      "Invalid context: fonts.emoji invalid"
     );
   }
 }
@@ -61,14 +82,14 @@ function throwIfAborted(signal?: AbortSignal): void {
  * Ordered column drawing invariant: caller determines x,y per line.
  */
 function drawLineWithActualText(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: pdf-lib untyped
   page: any,
   tokens: readonly TextToken[],
   x: number,
   y: number,
   fontSize: number,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fontKeys: Map<unknown, PDFName> & { formatCodes?: ReadonlyMap<number, number> },
+  fontKeys: Map<unknown, PDFName> & { formatCodes?: ReadonlyMap<number, number> }
 ): void {
   const text = tokens.map((t) => t.text).join("");
   // ActualText must be UTF-16 hex encoded via PDFHexString.fromText
@@ -88,7 +109,7 @@ function drawLineWithActualText(
       PDFNumber.of(1),
       PDFNumber.of(x),
       PDFNumber.of(y),
-    ]),
+    ])
   );
 
   const runs = groupIntoRuns(tokens);
@@ -97,7 +118,7 @@ function drawLineWithActualText(
     if (fontKey === undefined) {
       throw new ContextPackError(
         { code: "INVALID_CONTEXT", details: { reason: "missing font key" } },
-        "Missing font key for run",
+        "Missing font key for run"
       );
     }
     // Set font
@@ -130,7 +151,7 @@ function drawLineWithActualText(
   ops.push(
     PDFOperator.of(PDFOperatorNames.EndText, []),
     PDFOperator.of(PDFOperatorNames.PopGraphicsState, []),
-    PDFOperator.of(PDFOperatorNames.EndMarkedContent, []),
+    PDFOperator.of(PDFOperatorNames.EndMarkedContent, [])
   );
 
   page.pushOperators(...(ops as never[]));
@@ -143,7 +164,7 @@ function drawLineWithActualText(
 export async function renderTransportPdf(
   transport: string,
   fonts: { readonly regular: Uint8Array; readonly emoji?: Uint8Array },
-  options?: { readonly pageBudget?: number; readonly signal?: AbortSignal },
+  options?: { readonly pageBudget?: number; readonly signal?: AbortSignal }
 ): Promise<{ readonly pdfBytes: Uint8Array; readonly pageCount: number }> {
   throwIfAborted(options?.signal);
   assertFonts(fonts);
@@ -151,7 +172,7 @@ export async function renderTransportPdf(
   if (typeof transport !== "string" || transport.length === 0) {
     throw new ContextPackError(
       { code: "INVALID_CONTEXT_EMPTY", details: { reason: "empty" } },
-      "Invalid context: empty after canonicalization",
+      "Invalid context: empty after canonicalization"
     );
   }
 
@@ -160,7 +181,7 @@ export async function renderTransportPdf(
   if (miss) {
     throw new ContextPackError(
       { code: "UNSUPPORTED_GLYPH", details: { codePoint: miss.codePoint, offset: miss.offset } },
-      `Unsupported glyph U+${miss.codePoint.toString(16).toUpperCase().padStart(4, "0")} at offset ${miss.offset}`,
+      `Unsupported glyph U+${miss.codePoint.toString(16).toUpperCase().padStart(4, "0")} at offset ${miss.offset}`
     );
   }
 
@@ -190,7 +211,7 @@ export async function renderTransportPdf(
     const msg = err instanceof Error ? err.message : String(err);
     throw new ContextPackError(
       { code: "INVALID_CONTEXT", details: { reason: `primary font embed failed: ${msg}` } },
-      `Primary font embed failed: ${msg}`,
+      `Primary font embed failed: ${msg}`
     );
   }
   let emojiFont: unknown | null = null;
@@ -224,9 +245,10 @@ export async function renderTransportPdf(
       const cp = ch.codePointAt(0);
       if (cp === undefined) return false;
       if (primarySet.has(cp)) continue;
-      if (emojiSet && emojiSet.has(cp)) continue;
+      if (emojiSet?.has(cp)) continue;
       // Allow format already handled
-      if (cp === 0x200d || cp === 0xfe0e || cp === 0xfe0f || (cp >= 0xe0020 && cp <= 0xe007f)) continue;
+      if (cp === 0x200d || cp === 0xfe0e || cp === 0xfe0f || (cp >= 0xe0020 && cp <= 0xe007f))
+        continue;
       // Emoji variable font not embedded (COLRv1 unsupported) — treat as covered via ActualText fallback
       if (requiredFontForChar(ch) === "emoji") continue;
       return false;
@@ -246,7 +268,7 @@ export async function renderTransportPdf(
       for (let j = 0; j < i; j += 1) offset += (graphemes[j] as string).length;
       throw new ContextPackError(
         { code: "UNSUPPORTED_GLYPH", details: { codePoint: cp, offset } },
-        `Unsupported glyph U+${cp.toString(16).toUpperCase().padStart(4, "0")} at offset ${offset}`,
+        `Unsupported glyph U+${cp.toString(16).toUpperCase().padStart(4, "0")} at offset ${offset}`
       );
     }
     // Additional check for multi-codepoint emoji families: they were split earlier but here we check per grapheme?
@@ -292,7 +314,7 @@ export async function renderTransportPdf(
   if (computedPages > pageBudget) {
     throw new ContextPackError(
       { code: "PAGE_BUDGET_EXCEEDED", details: { pageBudget, requiredPages: computedPages } },
-      `Page budget exceeded: need ${computedPages} pages at ${plan.profile.fontSize}pt`,
+      `Page budget exceeded: need ${computedPages} pages at ${plan.profile.fontSize}pt`
     );
   }
   // Deterministic pageCount follows plan unless measured wrap overflow differs; use max to guarantee no overflow truncation
@@ -305,7 +327,7 @@ export async function renderTransportPdf(
   // Collect format code points for Type3 font
   const formatCodePoints = tokens
     .filter((t) => t.font === FORMAT_FONT_SENTINEL)
-    .map((t) => t.formatCodePoint ?? (t.text.codePointAt(0) ?? 0));
+    .map((t) => t.formatCodePoint ?? t.text.codePointAt(0) ?? 0);
   const formatFont = createZeroWidthFormatFont(pdf as unknown as never, formatCodePoints);
 
   throwIfAborted(options?.signal);
@@ -315,23 +337,29 @@ export async function renderTransportPdf(
   for (let pageIndex = 0; pageIndex < pageCount; pageIndex += 1) {
     const page = pdf.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
     // Deterministic font key order
-    const fontKeys = new Map<unknown, PDFName>() as Map<unknown, PDFName> & { formatCodes?: ReadonlyMap<number, number> };
+    const fontKeys = new Map<unknown, PDFName>() as Map<unknown, PDFName> & {
+      formatCodes?: ReadonlyMap<number, number>;
+    };
     const primaryKey = page.node.newFontDictionary(
       (primaryFont as { name: string }).name,
-      (primaryFont as { ref: PDFRef }).ref,
+      (primaryFont as { ref: PDFRef }).ref
     );
     fontKeys.set(primaryFont, primaryKey);
     if (emojiFont) {
       const emojiKey = page.node.newFontDictionary(
         (emojiFont as { name: string }).name,
-        (emojiFont as { ref: PDFRef }).ref,
+        (emojiFont as { ref: PDFRef }).ref
       );
       fontKeys.set(emojiFont, emojiKey);
     }
     if (formatFont) {
-      const fmtKey = page.node.newFontDictionary("GeminiContextPackFormat", formatFont.ref as PDFRef);
+      const fmtKey = page.node.newFontDictionary(
+        "GeminiContextPackFormat",
+        formatFont.ref as PDFRef
+      );
       fontKeys.set(FORMAT_FONT_SENTINEL, fmtKey);
-      (fontKeys as unknown as { formatCodes: ReadonlyMap<number, number> }).formatCodes = formatFont.formatCodes;
+      (fontKeys as unknown as { formatCodes: ReadonlyMap<number, number> }).formatCodes =
+        formatFont.formatCodes;
     }
 
     for (let col = 0; col < COLUMN_COUNT; col += 1) {
@@ -348,7 +376,9 @@ export async function renderTransportPdf(
           x,
           y,
           plan.profile.fontSize,
-          fontKeys as unknown as Map<unknown, PDFName> & { formatCodes?: ReadonlyMap<number, number> },
+          fontKeys as unknown as Map<unknown, PDFName> & {
+            formatCodes?: ReadonlyMap<number, number>;
+          }
         );
       }
     }
@@ -375,7 +405,10 @@ export async function renderTransportPdf(
       pdf2.setTitle(FIXED_TITLE);
       pdf2.setSubject(FIXED_TITLE);
       pdf2.setKeywords([FIXED_TITLE]);
-      const primaryFont2 = await pdf2.embedFont(Buffer.from(fonts.regular) as unknown as Uint8Array, { subset: true });
+      const primaryFont2 = await pdf2.embedFont(
+        Buffer.from(fonts.regular) as unknown as Uint8Array,
+        { subset: true }
+      );
       const builder2 = createTokenBuilder(primaryFont2, null, plan.profile.fontSize);
       const tokens2: TextToken[] = [];
       for (const g of segmentGraphemes(transport)) {
@@ -390,20 +423,31 @@ export async function renderTransportPdf(
         } else tokens2.push(builder2(g as string));
       }
       const lines2 = wrapMeasuredTokens(tokens2, getColumnWidth());
-      const formatCodes2 = tokens2.filter((t) => t.font === FORMAT_FONT_SENTINEL).map((t) => t.formatCodePoint ?? (t.text.codePointAt(0) ?? 0));
+      const formatCodes2 = tokens2
+        .filter((t) => t.font === FORMAT_FONT_SENTINEL)
+        .map((t) => t.formatCodePoint ?? t.text.codePointAt(0) ?? 0);
       const formatFont2 = createZeroWidthFormatFont(pdf2 as unknown as never, formatCodes2);
       const contentTop2 = PAGE_HEIGHT - MARGIN;
       const linesPerCol2 = getLinesPerColumn(plan.profile.leading);
       const linesPerPage2 = getLinesPerPage(plan.profile.leading);
       for (let pi = 0; pi < pageCount; pi += 1) {
         const page = pdf2.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
-        const keys = new Map<unknown, PDFName>() as Map<unknown, PDFName> & { formatCodes?: ReadonlyMap<number, number> };
-        const pk = page.node.newFontDictionary((primaryFont2 as { name: string }).name, (primaryFont2 as { ref: PDFRef }).ref);
+        const keys = new Map<unknown, PDFName>() as Map<unknown, PDFName> & {
+          formatCodes?: ReadonlyMap<number, number>;
+        };
+        const pk = page.node.newFontDictionary(
+          (primaryFont2 as { name: string }).name,
+          (primaryFont2 as { ref: PDFRef }).ref
+        );
         keys.set(primaryFont2, pk);
         if (formatFont2) {
-          const fk2 = page.node.newFontDictionary("GeminiContextPackFormat", formatFont2.ref as PDFRef);
+          const fk2 = page.node.newFontDictionary(
+            "GeminiContextPackFormat",
+            formatFont2.ref as PDFRef
+          );
           keys.set(FORMAT_FONT_SENTINEL, fk2);
-          (keys as unknown as { formatCodes: ReadonlyMap<number, number> }).formatCodes = formatFont2.formatCodes;
+          (keys as unknown as { formatCodes: ReadonlyMap<number, number> }).formatCodes =
+            formatFont2.formatCodes;
         }
         for (let col = 0; col < COLUMN_COUNT; col += 1) {
           const x = MARGIN + col * (getColumnWidth() + COLUMN_GAP);
@@ -413,7 +457,16 @@ export async function renderTransportPdf(
             const line = lines2[li];
             if (!line || line.length === 0) continue;
             const y = contentTop2 - (row + 1) * plan.profile.leading;
-            drawLineWithActualText(page as unknown as never, line, x, y, plan.profile.fontSize, keys as unknown as Map<unknown, PDFName> & { formatCodes?: ReadonlyMap<number, number> });
+            drawLineWithActualText(
+              page as unknown as never,
+              line,
+              x,
+              y,
+              plan.profile.fontSize,
+              keys as unknown as Map<unknown, PDFName> & {
+                formatCodes?: ReadonlyMap<number, number>;
+              }
+            );
           }
         }
       }

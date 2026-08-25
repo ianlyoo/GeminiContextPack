@@ -3,9 +3,10 @@
  * Splits ZWJ families, measures widths via pdf-lib font metrics,
  * and groups adjacent tokens sharing the same font.
  */
-import { FORMAT_CHARACTER_PATTERN, isEmojiGrapheme } from "./graphemes.js";
-import { FORMAT_FONT_SENTINEL } from "./format-font.js";
+
 import { requiredFontForChar } from "./font-coverage.js";
+import { FORMAT_FONT_SENTINEL } from "./format-font.js";
+import { FORMAT_CHARACTER_PATTERN, isEmojiGrapheme } from "./graphemes.js";
 
 export type FontKey = unknown;
 
@@ -34,11 +35,11 @@ const WHITESPACE_RE = /^\s+$/u;
 export function createTokenBuilder(
   primaryFont: unknown,
   emojiFont: unknown | null,
-  fontSize: number,
+  fontSize: number
 ): (text: string, isolate?: boolean) => TextToken {
   // Build character sets once (deterministic)
   const primarySet: ReadonlySet<number> = new Set(
-    (primaryFont as { getCharacterSet(): number[] }).getCharacterSet(),
+    (primaryFont as { getCharacterSet(): number[] }).getCharacterSet()
   );
   const emojiSet: ReadonlySet<number> | null = emojiFont
     ? new Set((emojiFont as { getCharacterSet(): number[] }).getCharacterSet())
@@ -185,7 +186,7 @@ export function pushLine(lines: TextToken[][], tokens: readonly TextToken[]): vo
  */
 export function wrapMeasuredTokens(
   tokens: readonly TextToken[],
-  columnWidth: number,
+  columnWidth: number
 ): TextToken[][] {
   const lines: TextToken[][] = [];
   let current: TextToken[] = [];
