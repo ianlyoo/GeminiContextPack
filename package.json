@@ -70,7 +70,8 @@
     "fonts:verify": "bun run scripts/vendor-fonts.ts",
     "fonts:vendor": "bun run scripts/vendor-fonts.ts --fetch",
     "evidence:verify": "bun run scripts/verify-evidence.ts",
-    "evidence:build": "bun run scripts/build-results.ts"
+    "evidence:build": "bun run scripts/build-results.ts",
+    "bench:offline": "bun run benchmarks/offline.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",

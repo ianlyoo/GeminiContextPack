@@ -55,6 +55,19 @@ function getUsageTokens(raw: unknown): { prompt: number; candidates: number; tho
   };
 }
 
+function verifyRawIntegrity(art: RawArtifact): void {
+  const full = join(PRODUCT_ROOT, art.path);
+  if (!existsSync(full)) throw new Error(`raw evidence missing on disk: ${art.path}`);
+  const bytes = readFileSync(full);
+  const got = sha256Hex(bytes);
+  if (got !== art.sha256) {
+    throw new Error(`raw integrity failed for ${art.path}: manifest sha ${art.sha256} vs file sha ${got} — raw was mutated; refusing to derive report`);
+  }
+  if (bytes.length !== art.bytes) {
+    throw new Error(`raw bytes length mismatch for ${art.path}: manifest ${art.bytes} vs file ${bytes.length}`);
+  }
+}
+
 function extractPlainPdfPair(
   manifestArtifacts: RawArtifact[],
   plainFilename: string,
@@ -63,6 +76,9 @@ function extractPlainPdfPair(
   const plainArt = manifestArtifacts.find((a) => a.filename === plainFilename);
   const pdfArt = manifestArtifacts.find((a) => a.filename === pdfFilename);
   if (!plainArt || !pdfArt) throw new Error(`missing artifacts for ${plainFilename} / ${pdfFilename}`);
+  // Provenance validation before deriving — fail fast if raw mutated
+  verifyRawIntegrity(plainArt);
+  verifyRawIntegrity(pdfArt);
   const plainRaw = readJsonEvidence(plainArt.path) as Record<string, unknown>;
   const pdfRaw = readJsonEvidence(pdfArt.path) as Record<string, unknown>;
   const plainUsage = plainRaw["usage"] as Record<string, unknown>;
@@ -125,7 +141,7 @@ export function buildResults(): void {
     description: "Derived qualified reports — provider-reported input usage only, no cost/invoice claims",
     branding: "GeminiContextPack",
     limitations:
-      "Synthetic corpus seed=42; one run per condition; model gemini-3.5-flash with MEDIA_RESOLUTION_LOW for primary PDF; provider-reported input tokens (usage.prompt_token_count) only; no invoice, no dollar cost, no savings claim; retrieval is substring match; cachedContentTokenCount varies by run; policy and pricing subject to change.",
+      "Synthetic corpus seed=42 deterministic lorem with payload; not natural language; one run per condition; no statistical distribution; model gemini-3.5-flash only with MEDIA_RESOLUTION_LOW for primary PDF (MEDIUM/HIGH variants exist); provider-reported input tokens (usage.prompt_token_count) only; no invoice, no dollar cost, no savings claim; generation and retrieval wrappers differ (see raw); retrieval is substring match; cachedContentTokenCount varies by run and wrapper/cache may affect provider counts; policy, model behavior, pricing and tokenization may change.",
     model_primary: "gemini-3.5-flash",
     media_resolution_primary: "MEDIA_RESOLUTION_LOW",
     api_endpoint: "generativelanguage.googleapis.com",
@@ -260,10 +276,10 @@ export function buildResults(): void {
   writeFileSync(RESULTS_JSON_PATH, JSON.stringify(results, null, 2) + "\n");
   console.log(`[build-results] wrote ${RESULTS_JSON_PATH}`);
 
-  // Markdown
+  // Markdown — include required limitation keywords: synthetic, seed42, one run, model/resolution, cache/wrapper, no invoice, policy may change
   const md = `# GeminiContextPack — Qualified Benchmark Results
 
-> **Scope:** Synthetic corpus (seed 42), one run per condition, model \`gemini-3.5-flash\` with \`MEDIA_RESOLUTION_LOW\`. Values are **provider-reported input tokens** (\`usage.prompt_token_count\`) — no invoice, no dollar cost, no savings claim. Every number is traceable to raw evidence via SHA-256 and JSON path; raw bytes in \`evidence/raw\` are never rewritten.
+> **Scope:** Synthetic corpus (seed 42 deterministic lorem), one run per condition, model \`gemini-3.5-flash\` with \`MEDIA_RESOLUTION_LOW\`. Values are **provider-reported input tokens** (\`usage.prompt_token_count\`) — no invoice, no dollar cost, no savings claim; cache/wrapper may affect provider counts; policy may change. Every number is traceable to raw evidence via SHA-256 and JSON path; raw bytes in \`evidence/raw\` are never rewritten.
 
 Generated: ${now}
 Manifest: \`evidence/manifest.json\`

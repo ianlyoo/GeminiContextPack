@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-25T15:42:59.357Z",
+  "generatedAt": "2026-08-25T17:39:13.500Z",
   "sourceRoot": "C:/Users/torch/Documents/code/pdftokenizer/pagefold_validation",
   "description": "Gemini benchmark raw evidence — byte-identical, forbidden-brand-free, immutable manifest",
   "artifacts": [
@@ -150,11 +150,11 @@
     {
       "filename": "results.json",
       "path": "evidence/results.json",
-      "sha256": "c27cff256ebc21ce93bec0eb0908442aa4c01db78d46c30c8ea3dbb81e56e7d8",
-      "bytes": 6149,
+      "sha256": "e725a4f430405f7d6c14d179146a3fba0777752a0e15c0383fc02304688c6aba",
+      "bytes": 6387,
       "role": "derived-qualified-report-json",
       "model": "gemini-3.5-flash",
-      "timestamp": "2026-08-25T15:42:59.357Z",
+      "timestamp": "2026-08-25T17:39:13.500Z",
       "sourcePath": "derived:evidence/raw/plain_5k.json+pdf_5k.json+plain_20k.json+pdf_20k.json+plain_50k.json+pdf_50k.json",
       "derivedFrom": [
         {
@@ -198,11 +198,11 @@
     {
       "filename": "results.md",
       "path": "evidence/results.md",
-      "sha256": "cf5674abfdc906a35b2b2502447f54a01ca81a5d8348ebb18ac57fc99b07942f",
-      "bytes": 4928,
+      "sha256": "7fdec3b689a0f943434f8c5dd3158f141f635f1229b0c4c1a7d7d4f0224cbb50",
+      "bytes": 5009,
       "role": "derived-qualified-report-markdown",
       "model": "gemini-3.5-flash",
-      "timestamp": "2026-08-25T15:42:59.357Z",
+      "timestamp": "2026-08-25T17:39:13.500Z",
       "sourcePath": "derived:evidence/raw/plain_5k.json+pdf_5k.json+plain_20k.json+pdf_20k.json+plain_50k.json+pdf_50k.json",
       "derivedFrom": [
         {

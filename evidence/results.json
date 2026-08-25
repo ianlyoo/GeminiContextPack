@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-25T15:42:59.357Z",
+  "generatedAt": "2026-08-25T17:39:13.500Z",
   "description": "Derived qualified reports — provider-reported input usage only, no cost/invoice claims",
   "branding": "GeminiContextPack",
-  "limitations": "Synthetic corpus seed=42; one run per condition; model gemini-3.5-flash with MEDIA_RESOLUTION_LOW for primary PDF; provider-reported input tokens (usage.prompt_token_count) only; no invoice, no dollar cost, no savings claim; retrieval is substring match; cachedContentTokenCount varies by run; policy and pricing subject to change.",
+  "limitations": "Synthetic corpus seed=42 deterministic lorem with payload; not natural language; one run per condition; no statistical distribution; model gemini-3.5-flash only with MEDIA_RESOLUTION_LOW for primary PDF (MEDIUM/HIGH variants exist); provider-reported input tokens (usage.prompt_token_count) only; no invoice, no dollar cost, no savings claim; generation and retrieval wrappers differ (see raw); retrieval is substring match; cachedContentTokenCount varies by run and wrapper/cache may affect provider counts; policy, model behavior, pricing and tokenization may change.",
   "model_primary": "gemini-3.5-flash",
   "media_resolution_primary": "MEDIA_RESOLUTION_LOW",
   "api_endpoint": "generativelanguage.googleapis.com",

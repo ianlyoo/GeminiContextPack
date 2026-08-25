@@ -1,8 +1,8 @@
 # GeminiContextPack — Qualified Benchmark Results
 
-> **Scope:** Synthetic corpus (seed 42), one run per condition, model `gemini-3.5-flash` with `MEDIA_RESOLUTION_LOW`. Values are **provider-reported input tokens** (`usage.prompt_token_count`) — no invoice, no dollar cost, no savings claim. Every number is traceable to raw evidence via SHA-256 and JSON path; raw bytes in `evidence/raw` are never rewritten.
+> **Scope:** Synthetic corpus (seed 42 deterministic lorem), one run per condition, model `gemini-3.5-flash` with `MEDIA_RESOLUTION_LOW`. Values are **provider-reported input tokens** (`usage.prompt_token_count`) — no invoice, no dollar cost, no savings claim; cache/wrapper may affect provider counts; policy may change. Every number is traceable to raw evidence via SHA-256 and JSON path; raw bytes in `evidence/raw` are never rewritten.
 
-Generated: 2026-08-25T15:42:59.357Z
+Generated: 2026-08-25T17:39:13.500Z
 Manifest: `evidence/manifest.json`
 
 ## Summary (plain vs PDF, provider-reported prompt tokens)
@@ -46,7 +46,7 @@ All raw files are byte-identical copies of private source (see `evidence/manifes
 - `evidence/raw/plain_50k.json` — `0bc18322c2618a85…` — raw-plaintext-benchmark — gemini-3.5-flash — 2026-08-25T08:42:25.348031
 - `evidence/raw/plain_5k_3flash.json` — `f23b5d6f813a10bb…` — raw-plaintext-benchmark — gemini-3-flash-preview — 2026-08-25T08:43:11.279832
 - `evidence/raw/plain_5k.json` — `940c31d2c6f4bf1f…` — raw-plaintext-benchmark — gemini-3.5-flash — 2026-08-25T08:41:46.036652
-- `evidence/results.json` — `8881537266c24d3e…` — derived-qualified-report-json — gemini-3.5-flash — 2026-08-25T15:39:12.640Z
+- `evidence/results.json` — `c27cff256ebc21ce…` — derived-qualified-report-json — gemini-3.5-flash — 2026-08-25T15:42:59.357Z
 
 Corpus PDFs (rendered once, byte-identical):
 
