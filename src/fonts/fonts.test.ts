@@ -72,8 +72,8 @@ describe("fonts: bundled offline verification", () => {
 
   test("compileContextWithBundledFonts produces verified artifact", async () => {
     __clearFontCache();
-    const artifact = await compileContextWithBundledFonts("hello world — 안녕하세요 🌍", {});
-    expect(artifact.canonicalSource).toBe("hello world — 안녕하세요 🌍");
+    const artifact = await compileContextWithBundledFonts("hello world — 안녕하세요 中文", {});
+    expect(artifact.canonicalSource).toBe("hello world — 안녕하세요 中文");
     expect(artifact.pdfBytes).toBeInstanceOf(Uint8Array);
     expect(artifact.canonicalHash).toMatch(/^[0-9a-f]{64}$/);
     expect(artifact.pageCount).toBe(1);

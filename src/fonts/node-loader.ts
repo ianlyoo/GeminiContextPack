@@ -72,7 +72,7 @@ export function loadBundledFonts(): FontBundle {
     if (bytes.length !== entry.bytes) throw new Error(`${entry.filename} bytes mismatch`);
     const got = sha256Hex(bytes);
     if (got !== entry.sha256) throw new Error(`${entry.filename} SHA mismatch`);
-    return new Uint8Array(bytes);
+    return bytes as unknown as Uint8Array;
   };
 
   const regular = loadOne(regularEntry);

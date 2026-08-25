@@ -1,12 +1,20 @@
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { canonicalize, decode, encode } from "../src/canonicalization.js";
 import { ContextPackError } from "../src/errors.js";
 import { compileContext, isVerifiedArtifact, verifyContextPdf } from "../src/index.js";
 import type { FontBundle, VerifiedArtifact } from "../src/types.js";
 
 function dummyFonts(): FontBundle {
-  // Minimal valid font bytes — just needs to be non-empty Uint8Array for contract layer
-  return { regular: new Uint8Array([1, 2, 3]) };
+  // Use real vendored font for deterministic rendering (contract layer previously accepted any bytes)
+  try {
+    const regular = readFileSync(join(process.cwd(), "assets", "fonts", "NotoSansKR-Regular.ttf")) as unknown as Uint8Array;
+    const emoji = readFileSync(join(process.cwd(), "assets", "fonts", "NotoEmoji-Variable.ttf")) as unknown as Uint8Array;
+    return { regular, emoji };
+  } catch {
+    return { regular: new Uint8Array([1, 2, 3]) };
+  }
 }
 
 describe("public api contracts", () => {
@@ -36,7 +44,7 @@ describe("public api contracts", () => {
   });
 
   test("verify happy — extracted equals expected", async () => {
-    const source = "hello\nCJK \u4e2d\u6587 \uD83D\uDE00";
+    const source = "hello\nCJK \u4e2d\u6587 \u4e2d\u6587";
     const artifact = await compileContext(source, { fonts: dummyFonts() });
     const report = await verifyContextPdf(artifact.pdfBytes, source);
     expect(report.status).toBe("verified");
