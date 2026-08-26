@@ -283,10 +283,16 @@ function unpackTarball(productRoot: string, tarballFiles: string[]): { unpackDir
   const tgzPath = join(productRoot, filename);
   if (!existsSync(tgzPath)) throw new Error(`tarball not found at ${tgzPath}`);
   const unpackDir = mkdtempSync(join(tmpdir(), "release-audit-unpack-"));
-  // Use tar if available; handle Windows D: drive colon issue by normalizing to forward slashes
+  // Use tar if available; handle Windows D: drive colon issue by normalizing to forward slashes and forcing local
   const tarTgz = tgzPath.replace(/\\/g, "/");
   const tarUnpack = unpackDir.replace(/\\/g, "/");
-  const tarRes = spawnSync("tar", ["-xzf", tarTgz, "-C", tarUnpack], { encoding: "utf8", timeout: 30_000 });
+  // --force-local ensures D: is not treated as remote host on Windows tar
+  const tarArgs = ["--force-local", "-xzf", tarTgz, "-C", tarUnpack];
+  let tarRes = spawnSync("tar", tarArgs, { encoding: "utf8", timeout: 30_000 });
+  if (tarRes.status !== 0 && String(tarRes.stderr).includes("force-local")) {
+    // Fallback for tar that doesn't support --force-local (e.g., BSD tar)
+    tarRes = spawnSync("tar", ["-xzf", tarTgz, "-C", tarUnpack], { encoding: "utf8", timeout: 30_000 });
+  }
   // Clean tgz immediately to keep git status clean
   try {
     // remove tgz file produced by npm pack
