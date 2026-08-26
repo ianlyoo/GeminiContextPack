@@ -99,7 +99,7 @@ jobs:
         run: |
           echo "[ci] checking workflows contain no publish/live secret"
           # Guard: search for real publish invocation (run: npm publish) not this guard's own grep string
-          if grep -R -- "run:.*npm publish" .github/workflows/ 2>/dev/null | grep -q "npm publish"; then echo "FAIL: publish job found"; exit 1; fi
+          if grep -R -- "run:.*npm publish" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -v "checking workflows" | grep -q "npm publish"; then echo "FAIL: publish job found"; exit 1; fi
           # For bare "npm publish" outside guard, exclude guard lines themselves
           if grep -R "npm publish" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -v "checking workflows" | grep -v "run:.*npm publish" | grep -q "npm publish"; then echo "FAIL: bare publish found"; exit 1; fi
           if grep -R "NPM_TOKEN" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -q "NPM_TOKEN"; then echo "FAIL: NPM_TOKEN found"; exit 1; fi
@@ -198,7 +198,7 @@ jobs:
         shell: bash
         run: |
           echo "[ci] checking workflows contain no publish/live secret"
-          if grep -R -- "run:.*npm publish" .github/workflows/ 2>/dev/null | grep -q "npm publish"; then echo "FAIL: publish job found"; exit 1; fi
+          if grep -R -- "run:.*npm publish" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -v "checking workflows" | grep -q "npm publish"; then echo "FAIL: publish job found"; exit 1; fi
           if grep -R "npm publish" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -v "checking workflows" | grep -v "run:.*npm publish" | grep -q "npm publish"; then echo "FAIL: bare publish found"; exit 1; fi
           if grep -R "NPM_TOKEN" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -q "NPM_TOKEN"; then echo "FAIL: NPM_TOKEN found"; exit 1; fi
           GUARD_LINE=$(grep -n "Guard no publish" .github/workflows/ci.yml | cut -d: -f1 | head -n1)

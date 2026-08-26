@@ -283,8 +283,10 @@ function unpackTarball(productRoot: string, tarballFiles: string[]): { unpackDir
   const tgzPath = join(productRoot, filename);
   if (!existsSync(tgzPath)) throw new Error(`tarball not found at ${tgzPath}`);
   const unpackDir = mkdtempSync(join(tmpdir(), "release-audit-unpack-"));
-  // Use tar if available; fallback to node extraction via spawnSync tar
-  const tarRes = spawnSync("tar", ["-xzf", tgzPath, "-C", unpackDir], { encoding: "utf8", timeout: 30_000 });
+  // Use tar if available; handle Windows D: drive colon issue by normalizing to forward slashes
+  const tarTgz = tgzPath.replace(/\\/g, "/");
+  const tarUnpack = unpackDir.replace(/\\/g, "/");
+  const tarRes = spawnSync("tar", ["-xzf", tarTgz, "-C", tarUnpack], { encoding: "utf8", timeout: 30_000 });
   // Clean tgz immediately to keep git status clean
   try {
     // remove tgz file produced by npm pack
