@@ -76,7 +76,7 @@
     "docs:check": "bun run scripts/docs-check.ts",
     "social-preview:build": "bun run scripts/build-social-preview.ts",
     "package:audit": "bun run scripts/package-audit.ts",
-    "release:audit": "echo '[release:audit] placeholder — task 20 will implement full clean-room audit' && exit 0"
+    "release:audit": "bun run scripts/release-audit.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",
