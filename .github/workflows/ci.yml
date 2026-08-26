@@ -47,11 +47,11 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
-      - name: Test (all suites)
-        run: bun test
-
       - name: Build
         run: bun run build
+
+      - name: Test (all suites)
+        run: bun test
 
       - name: Offline benchmark (deterministic seed-42)
         run: bun run benchmarks/offline.ts -- --out /tmp/bench-offline.json
@@ -146,11 +146,11 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
-      - name: Test (all suites)
-        run: bun test
-
       - name: Build
         run: bun run build
+
+      - name: Test (all suites)
+        run: bun test
 
       - name: Offline benchmark (deterministic seed-42)
         run: bun run benchmarks/offline.ts -- --out ${{ runner.temp }}/bench-offline.json
