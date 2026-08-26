@@ -1,12 +1,24 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { auditRelease } from "../scripts/release-audit.ts";
 
 const PRODUCT_ROOT = resolve(join(import.meta.dir, ".."));
-const SOURCE_ROOT = "C:\\Users\\torch\\Documents\\code\\pdftokenizer";
+const WIN_SOURCE = "C:\\Users\\torch\\Documents\\code\\pdftokenizer";
+const SOURCE_ROOT = existsSync(WIN_SOURCE)
+  ? WIN_SOURCE
+  : (() => {
+      const fallback = resolve(join(PRODUCT_ROOT, "..", "code", "pdftokenizer"));
+      if (!existsSync(fallback)) {
+        try {
+          const { mkdirSync } = require("node:fs") as typeof import("node:fs");
+          mkdirSync(fallback, { recursive: true });
+        } catch {}
+      }
+      return fallback;
+    })();
 
 function makeTempProduct(): string {
   const dir = mkdtempSync(join(tmpdir(), "release-audit-test-"));

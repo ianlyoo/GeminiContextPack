@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-const PRODUCT_ROOT = "C:\\Users\\torch\\Documents\\GeminiContextPack";
+const PRODUCT_ROOT = join(import.meta.dir, "..");
 const DOCS_ROOT = join(PRODUCT_ROOT, "docs");
 const INDEX_PATH = join(DOCS_ROOT, "index.html");
 const STYLES_PATH = join(DOCS_ROOT, "styles.css");
