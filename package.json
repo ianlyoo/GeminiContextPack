@@ -50,7 +50,7 @@
   },
   "files": [
     "dist",
-    "assets",
+    "assets/fonts",
     "LICENSE",
     "NOTICE",
     "THIRD_PARTY_LICENSES.md",
@@ -74,7 +74,9 @@
     "bench:offline": "bun run benchmarks/offline.ts",
     "test:live": "bun run benchmarks/live-gemini.ts",
     "docs:check": "bun run scripts/docs-check.ts",
-    "social-preview:build": "bun run scripts/build-social-preview.ts"
+    "social-preview:build": "bun run scripts/build-social-preview.ts",
+    "package:audit": "bun run scripts/package-audit.ts",
+    "release:audit": "echo '[release:audit] placeholder — task 20 will implement full clean-room audit' && exit 0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",

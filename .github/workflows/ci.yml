@@ -1,0 +1,211 @@
+# ci — offline, secret-free, cross-platform release candidate gate
+# Runs on ubuntu + windows with frozen install, deterministic SHA checks, and no publish/live secrets.
+# Triggered on push/pull_request. No workflow_dispatch, no secrets, no publish job.
+
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-ubuntu:
+    name: verify (ubuntu)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node (for npm pack audit)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install (frozen)
+        run: bun install --frozen-lockfile
+
+      - name: Fonts verify (SHA, OFL, immutable URLs)
+        run: bun run fonts:verify
+
+      - name: Evidence verify (SHA, brand, secrets, manifest)
+        run: bun run evidence:verify
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Test (all suites)
+        run: bun test
+
+      - name: Build
+        run: bun run build
+
+      - name: Offline benchmark (deterministic seed-42)
+        run: bun run benchmarks/offline.ts -- --out /tmp/bench-offline.json
+
+      - name: Docs check (A-J, metadata, claim, snippet typecheck)
+        run: bun run docs:check
+
+      - name: Pages SEO checks
+        run: bun test test/pages-seo.test.ts
+
+      - name: Social preview checks (deterministic PNG, <1MiB)
+        run: bun test test/social-preview.test.ts
+
+      - name: Package audit (allowlist, exports, bin, tarball)
+        run: bun run package:audit
+
+      - name: Release audit (if present)
+        shell: bash
+        run: |
+          if bun run --silent release:audit 2>&1 | grep -q "placeholder"; then
+            echo "[ci] release:audit placeholder — skipping full audit (task 20 will enforce)"
+            bun run release:audit
+          else
+            bun run release:audit
+          fi
+
+      - name: npm pack --dry-run (allowlist)
+        run: npm pack --dry-run
+
+      - name: npm pack --json allowlist cross-check
+        shell: bash
+        run: |
+          npm pack --json > /tmp/pack.json
+          echo "[ci] tarball files:"
+          node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/pack.json','utf8')); const files=j[0].files.map(f=>f.path).sort(); console.log(files.join('\n'))"
+          # Hard fail if forbidden paths leak into tarball (redundant with package:audit but explicit)
+          if grep -q "evidence/raw" /tmp/pack.json; then echo "FAIL: evidence/raw in tarball"; exit 1; fi
+          if grep -q "\.github" /tmp/pack.json; then echo "FAIL: .github in tarball"; exit 1; fi
+          if grep -q "\.env" /tmp/pack.json; then echo "FAIL: .env in tarball"; exit 1; fi
+          if grep -q "pagefold" /tmp/pack.json; then echo "FAIL: pagefold in tarball"; exit 1; fi
+          if grep -qi "risu" /tmp/pack.json; then echo "FAIL: risu in tarball"; exit 1; fi
+
+      - name: Guard no publish/live secret
+        shell: bash
+        run: |
+          echo "[ci] checking workflows contain no publish/live secret"
+          # Guard: search for real publish invocation (run: npm publish) not this guard's own grep string
+          if grep -R -- "run:.*npm publish" .github/workflows/ 2>/dev/null | grep -q "npm publish"; then echo "FAIL: publish job found"; exit 1; fi
+          # For bare "npm publish" outside guard, exclude guard lines themselves
+          if grep -R "npm publish" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -v "checking workflows" | grep -v "run:.*npm publish" | grep -q "npm publish"; then echo "FAIL: bare publish found"; exit 1; fi
+          if grep -R "NPM_TOKEN" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -q "NPM_TOKEN"; then echo "FAIL: NPM_TOKEN found"; exit 1; fi
+          # ci.yml must not reference live secret or secrets before this guard (guard lines themselves excluded via line count)
+          GUARD_LINE=$(grep -n "Guard no publish" .github/workflows/ci.yml | cut -d: -f1 | head -n1)
+          if [ -n "$GUARD_LINE" ]; then
+            BEFORE=$(head -n $((GUARD_LINE-1)) .github/workflows/ci.yml | grep -c "secrets\." || true)
+            if [ "$BEFORE" -gt 0 ]; then echo "FAIL: secrets in ci.yml before guard"; exit 1; fi
+            BEFORE2=$(head -n $((GUARD_LINE-1)) .github/workflows/ci.yml | grep -c "GEMINI_API_KEY" || true)
+            if [ "$BEFORE2" -gt 0 ]; then echo "FAIL: GEMINI_API_KEY before guard"; exit 1; fi
+          fi
+          echo "[ci] no publish/live secret — OK"
+
+  verify-windows:
+    name: verify (windows)
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node (for npm pack audit)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install (frozen)
+        run: bun install --frozen-lockfile
+
+      - name: Fonts verify (SHA, OFL, immutable URLs)
+        run: bun run fonts:verify
+
+      - name: Evidence verify (SHA, brand, secrets, manifest)
+        run: bun run evidence:verify
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Test (all suites)
+        run: bun test
+
+      - name: Build
+        run: bun run build
+
+      - name: Offline benchmark (deterministic seed-42)
+        run: bun run benchmarks/offline.ts -- --out ${{ runner.temp }}/bench-offline.json
+        shell: bash
+
+      - name: Docs check (A-J, metadata, claim, snippet typecheck)
+        run: bun run docs:check
+
+      - name: Pages SEO checks
+        run: bun test test/pages-seo.test.ts
+
+      - name: Social preview checks (deterministic PNG, <1MiB)
+        run: bun test test/social-preview.test.ts
+
+      - name: Package audit (allowlist, exports, bin, tarball)
+        run: bun run package:audit
+
+      - name: Release audit (if present)
+        shell: bash
+        run: |
+          if bun run --silent release:audit 2>&1 | grep -q "placeholder"; then
+            echo "[ci] release:audit placeholder — skipping full audit (task 20 will enforce)"
+            bun run release:audit
+          else
+            bun run release:audit
+          fi
+
+      - name: npm pack --dry-run (allowlist)
+        run: npm pack --dry-run
+
+      - name: npm pack --json allowlist cross-check
+        shell: pwsh
+        run: |
+          npm pack --json | Out-File -Encoding utf8 ${{ runner.temp }}/pack.json
+          Write-Host "[ci] tarball files:"
+          node -e "const j=JSON.parse(require('fs').readFileSync(process.env.RUNNER_TEMP + '/pack.json','utf8')); const files=j[0].files.map(f=>f.path).sort(); console.log(files.join('\n'))"
+          $content = Get-Content -Raw ${{ runner.temp }}/pack.json
+          if ($content -match "evidence/raw") { Write-Host "FAIL: evidence/raw in tarball"; exit 1 }
+          if ($content -match "\.github") { Write-Host "FAIL: .github in tarball"; exit 1 }
+          if ($content -match "\.env") { Write-Host "FAIL: .env in tarball"; exit 1 }
+          if ($content -match "pagefold") { Write-Host "FAIL: pagefold in tarball"; exit 1 }
+          if ($content -match "(?i)risu") { Write-Host "FAIL: risu in tarball"; exit 1 }
+
+      - name: Guard no publish/live secret
+        shell: bash
+        run: |
+          echo "[ci] checking workflows contain no publish/live secret"
+          if grep -R -- "run:.*npm publish" .github/workflows/ 2>/dev/null | grep -q "npm publish"; then echo "FAIL: publish job found"; exit 1; fi
+          if grep -R "npm publish" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -v "checking workflows" | grep -v "run:.*npm publish" | grep -q "npm publish"; then echo "FAIL: bare publish found"; exit 1; fi
+          if grep -R "NPM_TOKEN" .github/workflows/ 2>/dev/null | grep -v "Guard no publish" | grep -q "NPM_TOKEN"; then echo "FAIL: NPM_TOKEN found"; exit 1; fi
+          GUARD_LINE=$(grep -n "Guard no publish" .github/workflows/ci.yml | cut -d: -f1 | head -n1)
+          if [ -n "$GUARD_LINE" ]; then
+            BEFORE=$(head -n $((GUARD_LINE-1)) .github/workflows/ci.yml | grep -c "secrets\." || true)
+            if [ "$BEFORE" -gt 0 ]; then echo "FAIL: secrets in ci.yml before guard"; exit 1; fi
+            BEFORE2=$(head -n $((GUARD_LINE-1)) .github/workflows/ci.yml | grep -c "GEMINI_API_KEY" || true)
+            if [ "$BEFORE2" -gt 0 ]; then echo "FAIL: GEMINI_API_KEY before guard"; exit 1; fi
+          fi
+          echo "[ci] no publish/live secret — OK"
