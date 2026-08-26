@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync, mkdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
-import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import { auditRelease } from "../scripts/release-audit.ts";
 
 const PRODUCT_ROOT = resolve(join(import.meta.dir, ".."));
@@ -111,7 +111,9 @@ describe("release-audit failure fixtures (isolated, no private source touch)", (
       productRoot: PRODUCT_ROOT,
       sourceRoot: SOURCE_ROOT,
       trackedFilesOverride: ["src/secret.ts"],
-      extraFileContents: new Map([["src/secret.ts", "token = ghp_abcdefghijklmnopqrstuvwxyz1234567890ABCD"]]),
+      extraFileContents: new Map([
+        ["src/secret.ts", "token = ghp_abcdefghijklmnopqrstuvwxyz1234567890ABCD"],
+      ]),
       skipPack: true,
     });
     expect(result.secretHits).toBeGreaterThan(0);
@@ -123,7 +125,10 @@ describe("release-audit failure fixtures (isolated, no private source touch)", (
     // Create temp product with MIT license to isolate
     const tmp = makeTempProduct();
     try {
-      writeFileSync(join(tmp, "package.json"), JSON.stringify({ name: "gemini-context-pack", version: "0.1.0", license: "MIT" }));
+      writeFileSync(
+        join(tmp, "package.json"),
+        JSON.stringify({ name: "gemini-context-pack", version: "0.1.0", license: "MIT" })
+      );
       writeFileSync(join(tmp, "LICENSE"), "MIT License");
       writeFileSync(join(tmp, "NOTICE"), "Copyright 2026 ianlyoo");
       writeFileSync(join(tmp, "THIRD_PARTY_LICENSES.md"), "MIT");
@@ -148,7 +153,9 @@ describe("release-audit failure fixtures (isolated, no private source touch)", (
       productRoot: PRODUCT_ROOT,
       sourceRoot: SOURCE_ROOT,
       trackedFilesOverride: ["virtual-99plus.md"],
-      extraFileContents: new Map([["virtual-99plus.md", "# Title\nReduce tokens by 99%+ guaranteed savings."]]),
+      extraFileContents: new Map([
+        ["virtual-99plus.md", "# Title\nReduce tokens by 99%+ guaranteed savings."],
+      ]),
       skipPack: true,
     });
     // 99%+ should be flagged as claim violation
@@ -161,7 +168,9 @@ describe("release-audit failure fixtures (isolated, no private source touch)", (
       productRoot: PRODUCT_ROOT,
       sourceRoot: SOURCE_ROOT,
       trackedFilesOverride: ["virtual-claim.md"],
-      extraFileContents: new Map([["virtual-claim.md", "We reduce tokens by 99% without limitations."]]),
+      extraFileContents: new Map([
+        ["virtual-claim.md", "We reduce tokens by 99% without limitations."],
+      ]),
       skipPack: true,
     });
     expect(result.claimViolations).toBeGreaterThan(0);
@@ -215,11 +224,15 @@ describe("release-audit failure fixtures (isolated, no private source touch)", (
 describe("release-audit CLI", () => {
   test("CLI exits 0 with required JSON fields", () => {
     const scriptPath = join(PRODUCT_ROOT, "scripts/release-audit.ts");
-    const res = spawnSync("bun", [scriptPath, "--", "--source-root", SOURCE_ROOT, "--product-root", PRODUCT_ROOT], {
-      cwd: PRODUCT_ROOT,
-      encoding: "utf8",
-      timeout: 60_000,
-    });
+    const res = spawnSync(
+      "bun",
+      [scriptPath, "--", "--source-root", SOURCE_ROOT, "--product-root", PRODUCT_ROOT],
+      {
+        cwd: PRODUCT_ROOT,
+        encoding: "utf8",
+        timeout: 60_000,
+      }
+    );
     expect(res.status).toBe(0);
     const stdout = (res.stdout as string) ?? "";
     const json = JSON.parse(stdout) as Record<string, unknown>;
@@ -229,6 +242,6 @@ describe("release-audit CLI", () => {
     expect(json["claimViolations"]).toBe(0);
     expect(json["license"]).toBe("Apache-2.0");
     expect(json["remoteCount"]).toBe(0);
-    expect((json["ok"] as boolean)).toBe(true);
+    expect(json["ok"] as boolean).toBe(true);
   }, 60_000);
 });
