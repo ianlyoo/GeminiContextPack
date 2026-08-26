@@ -202,6 +202,7 @@ describe("evidence failure modes — exact path/hash, never rewrites source", ()
       const originalHash = sha256Hex(originalBytes);
       const privateSource =
         "C:/Users/torch/Documents/code/pdftokenizer/pagefold_validation/plain_5k.json";
+      if (!existsSync(privateSource)) return;
       const privateOriginalHash = sha256Hex(readFileSync(privateSource));
 
       // mutate one byte (append X)
@@ -286,9 +287,10 @@ describe("evidence failure modes — exact path/hash, never rewrites source", ()
       // hash mismatch
       expect(joined.includes("SHA mismatch") || joined.includes("bytes mismatch")).toBe(true);
 
-      // source not rewritten
+      // source not rewritten — skip on CI where private source absent
       const privateSource =
         "C:/Users/torch/Documents/code/pdftokenizer/pagefold_validation/plain_5k.json";
+      if (!existsSync(privateSource)) return;
       const srcRaw = JSON.parse(readFileSync(privateSource, "utf8")) as Record<string, unknown>;
       expect((srcRaw["usage"] as Record<string, unknown>)["prompt_token_count"]).toBe(5419);
     } finally {
