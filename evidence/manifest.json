@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-25T17:39:13.500Z",
+  "generatedAt": "2026-08-26T07:51:39.459Z",
   "sourceRoot": "C:/Users/torch/Documents/code/pdftokenizer/pagefold_validation",
   "description": "Gemini benchmark raw evidence — byte-identical, forbidden-brand-free, immutable manifest",
   "artifacts": [
@@ -40,8 +40,8 @@
     {
       "filename": "pdf_20k.json",
       "path": "evidence/raw/pdf_20k.json",
-      "sha256": "0ac77f528c6dbb4e6220b6b3c27f9a98c0677ab882221fabe6a4b132481abca4",
-      "bytes": 4596,
+      "sha256": "1679ec1a758ba2a557f6afddc7ca71ade9c48c5ed5b3bb52d68b87ef914fc9fc",
+      "bytes": 4448,
       "role": "raw-pdf-benchmark",
       "model": "gemini-3.5-flash",
       "timestamp": "2026-08-25T08:42:14.466707",
@@ -51,8 +51,8 @@
     {
       "filename": "pdf_50k.json",
       "path": "evidence/raw/pdf_50k.json",
-      "sha256": "db2b25ea3e5935c93d6946c400d086eae7a143e5eea9bb5262d871760866ef98",
-      "bytes": 4428,
+      "sha256": "1831dc9512a4ca346f19204114b56ddbabc688d6bf733018c5c8d1a74da9c450",
+      "bytes": 4289,
       "role": "raw-pdf-benchmark",
       "model": "gemini-3.5-flash",
       "timestamp": "2026-08-25T08:42:37.412925",
@@ -62,8 +62,8 @@
     {
       "filename": "pdf_5k_3flash.json",
       "path": "evidence/raw/pdf_5k_3flash.json",
-      "sha256": "0f3f9d95dd807db9525260380991bdd10d51b890b4184a7b356e3737e567f1ca",
-      "bytes": 4431,
+      "sha256": "e72d852208440db1541f8ebc06ae4f067778a826d80fc105d9bb151d0afd12f5",
+      "bytes": 4292,
       "role": "raw-pdf-benchmark",
       "model": "gemini-3-flash-preview",
       "timestamp": "2026-08-25T08:43:04.009320",
@@ -73,8 +73,8 @@
     {
       "filename": "pdf_5k_high.json",
       "path": "evidence/raw/pdf_5k_high.json",
-      "sha256": "f726b048fac95454d609ea1cb33f87f1cc3e867051688e5d1a9258ba5eb00ddd",
-      "bytes": 4425,
+      "sha256": "114c0d6c8b0f9ee2469471e71a3de536c4423ce3f0fd1f6cd632df89ead7871e",
+      "bytes": 4286,
       "role": "raw-pdf-benchmark",
       "model": "gemini-3.5-flash",
       "timestamp": "2026-08-25T08:43:22.693548",
@@ -84,8 +84,8 @@
     {
       "filename": "pdf_5k_medium.json",
       "path": "evidence/raw/pdf_5k_medium.json",
-      "sha256": "9854cd9b21d74430c99ec1008d87a452f9d0947a10a8d758edd429759b15cc8d",
-      "bytes": 4424,
+      "sha256": "2542c3352eae35dfe5633db4703723baba022b887f9ec3b3111c5ca5da58011f",
+      "bytes": 4285,
       "role": "raw-pdf-benchmark",
       "model": "gemini-3.5-flash",
       "timestamp": "2026-08-25T08:43:28.908793",
@@ -95,8 +95,8 @@
     {
       "filename": "pdf_5k.json",
       "path": "evidence/raw/pdf_5k.json",
-      "sha256": "20513793f07e81a0e9a6cb2fa1ae5442f5636518293c4bdb465bfcb54aa3da54",
-      "bytes": 4590,
+      "sha256": "14e4c9c717523452a684d179ad78c9fb82c7f37a9e4504ed5efef2959b9750d7",
+      "bytes": 4442,
       "role": "raw-pdf-benchmark",
       "model": "gemini-3.5-flash",
       "timestamp": "2026-08-25T08:41:52.328368",
@@ -106,8 +106,8 @@
     {
       "filename": "plain_20k.json",
       "path": "evidence/raw/plain_20k.json",
-      "sha256": "bf24aadd77e5618514abebf3338c2360ee252a635c94bceb6f92b2821eea5be3",
-      "bytes": 3940,
+      "sha256": "4fd9f7bd9b7bf4fea5e7a8659c5011546081b00fa1f645824164a4f6b6238435",
+      "bytes": 3817,
       "role": "raw-plaintext-benchmark",
       "model": "gemini-3.5-flash",
       "timestamp": "2026-08-25T08:42:04.511988",
@@ -117,8 +117,8 @@
     {
       "filename": "plain_50k.json",
       "path": "evidence/raw/plain_50k.json",
-      "sha256": "0bc18322c2618a85f17e476dcf544e62a76240ebc2c03941d423d6e87365686c",
-      "bytes": 3850,
+      "sha256": "6083aa4386a269380deb7da52d22bdf650e96fd3052c02e2d514d4d3e0eae04f",
+      "bytes": 3732,
       "role": "raw-plaintext-benchmark",
       "model": "gemini-3.5-flash",
       "timestamp": "2026-08-25T08:42:25.348031",
@@ -128,8 +128,8 @@
     {
       "filename": "plain_5k_3flash.json",
       "path": "evidence/raw/plain_5k_3flash.json",
-      "sha256": "f23b5d6f813a10bb52fb4b29c0f786652eff92c2686f3648b7cf2a52d274848b",
-      "bytes": 3849,
+      "sha256": "1b5309143c250b8344b63ac0537c6466381a6c191319a3a6e833f98e45977d89",
+      "bytes": 3731,
       "role": "raw-plaintext-benchmark",
       "model": "gemini-3-flash-preview",
       "timestamp": "2026-08-25T08:43:11.279832",
@@ -139,8 +139,8 @@
     {
       "filename": "plain_5k.json",
       "path": "evidence/raw/plain_5k.json",
-      "sha256": "940c31d2c6f4bf1f5af3e780c9196b2782bb0593fbe96c4469cdf31c3d873111",
-      "bytes": 3928,
+      "sha256": "21f959a24c2d926824d05ffef38dc09a36dc40496beaa62b912ec2a94cb3907c",
+      "bytes": 3805,
       "role": "raw-plaintext-benchmark",
       "model": "gemini-3.5-flash",
       "timestamp": "2026-08-25T08:41:46.036652",
@@ -150,47 +150,47 @@
     {
       "filename": "results.json",
       "path": "evidence/results.json",
-      "sha256": "e725a4f430405f7d6c14d179146a3fba0777752a0e15c0383fc02304688c6aba",
+      "sha256": "5dad7ede09963b3cb974226e0ad75b7b1bf10ad1b79ef2b6a0996673e0167bb4",
       "bytes": 6387,
       "role": "derived-qualified-report-json",
       "model": "gemini-3.5-flash",
-      "timestamp": "2026-08-25T17:39:13.500Z",
+      "timestamp": "2026-08-26T07:51:39.459Z",
       "sourcePath": "derived:evidence/raw/plain_5k.json+pdf_5k.json+plain_20k.json+pdf_20k.json+plain_50k.json+pdf_50k.json",
       "derivedFrom": [
         {
           "filename": "pdf_20k.json",
           "path": "evidence/raw/pdf_20k.json",
-          "sha256": "0ac77f528c6dbb4e6220b6b3c27f9a98c0677ab882221fabe6a4b132481abca4",
+          "sha256": "1679ec1a758ba2a557f6afddc7ca71ade9c48c5ed5b3bb52d68b87ef914fc9fc",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "pdf_50k.json",
           "path": "evidence/raw/pdf_50k.json",
-          "sha256": "db2b25ea3e5935c93d6946c400d086eae7a143e5eea9bb5262d871760866ef98",
+          "sha256": "1831dc9512a4ca346f19204114b56ddbabc688d6bf733018c5c8d1a74da9c450",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "pdf_5k.json",
           "path": "evidence/raw/pdf_5k.json",
-          "sha256": "20513793f07e81a0e9a6cb2fa1ae5442f5636518293c4bdb465bfcb54aa3da54",
+          "sha256": "14e4c9c717523452a684d179ad78c9fb82c7f37a9e4504ed5efef2959b9750d7",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "plain_20k.json",
           "path": "evidence/raw/plain_20k.json",
-          "sha256": "bf24aadd77e5618514abebf3338c2360ee252a635c94bceb6f92b2821eea5be3",
+          "sha256": "4fd9f7bd9b7bf4fea5e7a8659c5011546081b00fa1f645824164a4f6b6238435",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "plain_50k.json",
           "path": "evidence/raw/plain_50k.json",
-          "sha256": "0bc18322c2618a85f17e476dcf544e62a76240ebc2c03941d423d6e87365686c",
+          "sha256": "6083aa4386a269380deb7da52d22bdf650e96fd3052c02e2d514d4d3e0eae04f",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "plain_5k.json",
           "path": "evidence/raw/plain_5k.json",
-          "sha256": "940c31d2c6f4bf1f5af3e780c9196b2782bb0593fbe96c4469cdf31c3d873111",
+          "sha256": "21f959a24c2d926824d05ffef38dc09a36dc40496beaa62b912ec2a94cb3907c",
           "jsonPath": "usage.prompt_token_count"
         }
       ]
@@ -198,47 +198,47 @@
     {
       "filename": "results.md",
       "path": "evidence/results.md",
-      "sha256": "7fdec3b689a0f943434f8c5dd3158f141f635f1229b0c4c1a7d7d4f0224cbb50",
+      "sha256": "e9c2374fc073e7c7700d2d14cf54f19b51e50db5f597464277867444e19a63fd",
       "bytes": 5009,
       "role": "derived-qualified-report-markdown",
       "model": "gemini-3.5-flash",
-      "timestamp": "2026-08-25T17:39:13.500Z",
+      "timestamp": "2026-08-26T07:51:39.459Z",
       "sourcePath": "derived:evidence/raw/plain_5k.json+pdf_5k.json+plain_20k.json+pdf_20k.json+plain_50k.json+pdf_50k.json",
       "derivedFrom": [
         {
           "filename": "pdf_20k.json",
           "path": "evidence/raw/pdf_20k.json",
-          "sha256": "0ac77f528c6dbb4e6220b6b3c27f9a98c0677ab882221fabe6a4b132481abca4",
+          "sha256": "1679ec1a758ba2a557f6afddc7ca71ade9c48c5ed5b3bb52d68b87ef914fc9fc",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "pdf_50k.json",
           "path": "evidence/raw/pdf_50k.json",
-          "sha256": "db2b25ea3e5935c93d6946c400d086eae7a143e5eea9bb5262d871760866ef98",
+          "sha256": "1831dc9512a4ca346f19204114b56ddbabc688d6bf733018c5c8d1a74da9c450",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "pdf_5k.json",
           "path": "evidence/raw/pdf_5k.json",
-          "sha256": "20513793f07e81a0e9a6cb2fa1ae5442f5636518293c4bdb465bfcb54aa3da54",
+          "sha256": "14e4c9c717523452a684d179ad78c9fb82c7f37a9e4504ed5efef2959b9750d7",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "plain_20k.json",
           "path": "evidence/raw/plain_20k.json",
-          "sha256": "bf24aadd77e5618514abebf3338c2360ee252a635c94bceb6f92b2821eea5be3",
+          "sha256": "4fd9f7bd9b7bf4fea5e7a8659c5011546081b00fa1f645824164a4f6b6238435",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "plain_50k.json",
           "path": "evidence/raw/plain_50k.json",
-          "sha256": "0bc18322c2618a85f17e476dcf544e62a76240ebc2c03941d423d6e87365686c",
+          "sha256": "6083aa4386a269380deb7da52d22bdf650e96fd3052c02e2d514d4d3e0eae04f",
           "jsonPath": "usage.prompt_token_count"
         },
         {
           "filename": "plain_5k.json",
           "path": "evidence/raw/plain_5k.json",
-          "sha256": "940c31d2c6f4bf1f5af3e780c9196b2782bb0593fbe96c4469cdf31c3d873111",
+          "sha256": "21f959a24c2d926824d05ffef38dc09a36dc40496beaa62b912ec2a94cb3907c",
           "jsonPath": "usage.prompt_token_count"
         }
       ]

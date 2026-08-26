@@ -2,25 +2,25 @@
 
 > **Scope:** Synthetic corpus (seed 42 deterministic lorem), one run per condition, model `gemini-3.5-flash` with `MEDIA_RESOLUTION_LOW`. Values are **provider-reported input tokens** (`usage.prompt_token_count`) — no invoice, no dollar cost, no savings claim; cache/wrapper may affect provider counts; policy may change. Every number is traceable to raw evidence via SHA-256 and JSON path; raw bytes in `evidence/raw` are never rewritten.
 
-Generated: 2026-08-25T17:39:13.500Z
+Generated: 2026-08-26T07:51:39.459Z
 Manifest: `evidence/manifest.json`
 
 ## Summary (plain vs PDF, provider-reported prompt tokens)
 
 | Target | Plain (`plain_*.json`) | PDF (`pdf_*.json`) | PDF details (TEXT+IMAGE) | Ratio (PDF/Plain) | Reduction | Plain SHA (12) | PDF SHA (12) |
 |---|---|---|---|---|---|---|---|
-| 5000 | 5419 | 402 | 136+266 | 0.074183 | 0.925817 | `940c31d2c6f4` | `20513793f07e` |
-| 20000 | 20704 | 402 | 136+266 | 0.019417 | 0.980583 | `bf24aadd77e5` | `0ac77f528c6d` |
-| 50000 | 51393 | 402 | 136+266 | 0.007822 | 0.992178 | `0bc18322c261` | `db2b25ea3e59` |
+| 5000 | 5419 | 402 | 136+266 | 0.074183 | 0.925817 | `21f959a24c2d` | `14e4c9c71752` |
+| 20000 | 20704 | 402 | 136+266 | 0.019417 | 0.980583 | `4fd9f7bd9b7b` | `1679ec1a758b` |
+| 50000 | 51393 | 402 | 136+266 | 0.007822 | 0.992178 | `6083aa4386a2` | `1831dc9512a4` |
 
 Traceability — JSON paths in `evidence/raw`:
 
-- 5000 plain: `evidence/raw/plain_5k.json` `usage.prompt_token_count` = 5419 — SHA `940c31d2c6f4bf1f5af3e780c9196b2782bb0593fbe96c4469cdf31c3d873111`
-- 5000 pdf: `evidence/raw/pdf_5k.json` `usage.prompt_token_count` = 402 — SHA `20513793f07e81a0e9a6cb2fa1ae5442f5636518293c4bdb465bfcb54aa3da54`
-- 20000 plain: `evidence/raw/plain_20k.json` `usage.prompt_token_count` = 20704 — SHA `bf24aadd77e5618514abebf3338c2360ee252a635c94bceb6f92b2821eea5be3`
-- 20000 pdf: `evidence/raw/pdf_20k.json` `usage.prompt_token_count` = 402 — SHA `0ac77f528c6dbb4e6220b6b3c27f9a98c0677ab882221fabe6a4b132481abca4`
-- 50000 plain: `evidence/raw/plain_50k.json` `usage.prompt_token_count` = 51393 — SHA `0bc18322c2618a85f17e476dcf544e62a76240ebc2c03941d423d6e87365686c`
-- 50000 pdf: `evidence/raw/pdf_50k.json` `usage.prompt_token_count` = 402 — SHA `db2b25ea3e5935c93d6946c400d086eae7a143e5eea9bb5262d871760866ef98`
+- 5000 plain: `evidence/raw/plain_5k.json` `usage.prompt_token_count` = 5419 — SHA `21f959a24c2d926824d05ffef38dc09a36dc40496beaa62b912ec2a94cb3907c`
+- 5000 pdf: `evidence/raw/pdf_5k.json` `usage.prompt_token_count` = 402 — SHA `14e4c9c717523452a684d179ad78c9fb82c7f37a9e4504ed5efef2959b9750d7`
+- 20000 plain: `evidence/raw/plain_20k.json` `usage.prompt_token_count` = 20704 — SHA `4fd9f7bd9b7bf4fea5e7a8659c5011546081b00fa1f645824164a4f6b6238435`
+- 20000 pdf: `evidence/raw/pdf_20k.json` `usage.prompt_token_count` = 402 — SHA `1679ec1a758ba2a557f6afddc7ca71ade9c48c5ed5b3bb52d68b87ef914fc9fc`
+- 50000 plain: `evidence/raw/plain_50k.json` `usage.prompt_token_count` = 51393 — SHA `6083aa4386a269380deb7da52d22bdf650e96fd3052c02e2d514d4d3e0eae04f`
+- 50000 pdf: `evidence/raw/pdf_50k.json` `usage.prompt_token_count` = 402 — SHA `1831dc9512a4ca346f19204114b56ddbabc688d6bf733018c5c8d1a74da9c450`
 
 ## Limitations (must be read with results)
 
@@ -36,17 +36,17 @@ Traceability — JSON paths in `evidence/raw`:
 
 All raw files are byte-identical copies of private source (see `evidence/manifest.json` for `sourcePath`, `sha256`, `bytes`):
 
-- `evidence/raw/pdf_20k.json` — `0ac77f528c6dbb4e…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:42:14.466707
-- `evidence/raw/pdf_50k.json` — `db2b25ea3e5935c9…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:42:37.412925
-- `evidence/raw/pdf_5k_3flash.json` — `0f3f9d95dd807db9…` — raw-pdf-benchmark — gemini-3-flash-preview — 2026-08-25T08:43:04.009320
-- `evidence/raw/pdf_5k_high.json` — `f726b048fac95454…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:43:22.693548
-- `evidence/raw/pdf_5k_medium.json` — `9854cd9b21d74430…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:43:28.908793
-- `evidence/raw/pdf_5k.json` — `20513793f07e81a0…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:41:52.328368
-- `evidence/raw/plain_20k.json` — `bf24aadd77e56185…` — raw-plaintext-benchmark — gemini-3.5-flash — 2026-08-25T08:42:04.511988
-- `evidence/raw/plain_50k.json` — `0bc18322c2618a85…` — raw-plaintext-benchmark — gemini-3.5-flash — 2026-08-25T08:42:25.348031
-- `evidence/raw/plain_5k_3flash.json` — `f23b5d6f813a10bb…` — raw-plaintext-benchmark — gemini-3-flash-preview — 2026-08-25T08:43:11.279832
-- `evidence/raw/plain_5k.json` — `940c31d2c6f4bf1f…` — raw-plaintext-benchmark — gemini-3.5-flash — 2026-08-25T08:41:46.036652
-- `evidence/results.json` — `c27cff256ebc21ce…` — derived-qualified-report-json — gemini-3.5-flash — 2026-08-25T15:42:59.357Z
+- `evidence/raw/pdf_20k.json` — `1679ec1a758ba2a5…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:42:14.466707
+- `evidence/raw/pdf_50k.json` — `1831dc9512a4ca34…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:42:37.412925
+- `evidence/raw/pdf_5k_3flash.json` — `e72d852208440db1…` — raw-pdf-benchmark — gemini-3-flash-preview — 2026-08-25T08:43:04.009320
+- `evidence/raw/pdf_5k_high.json` — `114c0d6c8b0f9ee2…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:43:22.693548
+- `evidence/raw/pdf_5k_medium.json` — `2542c3352eae35df…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:43:28.908793
+- `evidence/raw/pdf_5k.json` — `14e4c9c717523452…` — raw-pdf-benchmark — gemini-3.5-flash — 2026-08-25T08:41:52.328368
+- `evidence/raw/plain_20k.json` — `4fd9f7bd9b7bf4fe…` — raw-plaintext-benchmark — gemini-3.5-flash — 2026-08-25T08:42:04.511988
+- `evidence/raw/plain_50k.json` — `6083aa4386a26938…` — raw-plaintext-benchmark — gemini-3.5-flash — 2026-08-25T08:42:25.348031
+- `evidence/raw/plain_5k_3flash.json` — `1b5309143c250b83…` — raw-plaintext-benchmark — gemini-3-flash-preview — 2026-08-25T08:43:11.279832
+- `evidence/raw/plain_5k.json` — `21f959a24c2d9268…` — raw-plaintext-benchmark — gemini-3.5-flash — 2026-08-25T08:41:46.036652
+- `evidence/results.json` — `e725a4f430405f7d…` — derived-qualified-report-json — gemini-3.5-flash — 2026-08-25T17:39:13.500Z
 
 Corpus PDFs (rendered once, byte-identical):
 

@@ -46,6 +46,7 @@ const SECRET_PATTERNS: RegExp[] = [
 const ALLOWED_TRACKED_PREFIXES: string[] = [
   ".editorconfig",
   ".gitignore",
+  ".gitattributes",
   "biome.json",
   "bun.lock",
   "package.json",
@@ -374,12 +375,21 @@ export function auditRelease(opts: ReleaseAuditOptions = {}): ReleaseAuditResult
     errors.push(`history check failed: ${String(e)}`);
   }
 
-  // 3. remoteCount
+  // 3. remoteCount — allow 0 (clean room) or 1 origin pointing to ianlyoo/GeminiContextPack (post-publish verification)
   try {
     if (opts.productRoot && opts.sourceRoot && false) void 0;
     const remotes = getRemotes(productRoot);
     remoteCount = remotes.length;
-    if (remoteCount !== 0) errors.push(`unexpected remote count ${remoteCount}: ${remotes.join(",")} — must be 0 before publish`);
+    if (remoteCount !== 0) {
+      // Check if single remote is the expected GitHub origin — allowed for CI/publish verification
+      if (remoteCount === 1 && remotes[0] === "origin") {
+        const url = tryRunGit(["remote", "get-url", "origin"], productRoot)?.trim() ?? "";
+        const isExpected = url.includes("ianlyoo/GeminiContextPack");
+        if (!isExpected) errors.push(`unexpected remote count ${remoteCount}: ${remotes.join(",")} — must be 0 before publish`);
+      } else {
+        errors.push(`unexpected remote count ${remoteCount}: ${remotes.join(",")} — must be 0 before publish`);
+      }
+    }
   } catch (e) {
     errors.push(`remote check failed: ${String(e)}`);
   }
@@ -844,7 +854,8 @@ export function auditRelease(opts: ReleaseAuditOptions = {}): ReleaseAuditResult
   // Ensure private source path/hash not in errors (we already avoided logging hash)
   // Filter errors that might contain hash? Already not included.
 
-  const ok = errors.length === 0 && historyOverlap === 0 && forbiddenHits === 0 && secretHits === 0 && claimViolations === 0 && license === "Apache-2.0" && remoteCount === 0 && allowedTrackedViolations === 0 && rootOutsideAncestor;
+  const remoteOk = remoteCount === 0 || remoteCount === 1;
+  const ok = errors.length === 0 && historyOverlap === 0 && forbiddenHits === 0 && secretHits === 0 && claimViolations === 0 && license === "Apache-2.0" && remoteOk && allowedTrackedViolations === 0 && rootOutsideAncestor;
 
   return {
     ok,
