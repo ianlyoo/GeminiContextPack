@@ -165,3 +165,7 @@ Noto Sans CJK KR and Noto Emoji (OFL) vendored from immutable upstream commits; 
 ---
 
 *Evidence produced offline on 2026-08-25; re-verify with `bun run evidence:verify`.*
+
+## Social preview
+
+Social preview image (1280×640, solid background, high contrast): `docs/assets/social-preview.png` — Pages canonical `https://ianlyoo.github.io/GeminiContextPack/assets/social-preview.png` — rebuild with `bun run social-preview:build`.
