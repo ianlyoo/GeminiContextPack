@@ -99,23 +99,29 @@ describe("social-preview", () => {
 
   test("happy — deterministic SHA on repeated locked render", () => {
     expect(existsSync(PNG_PATH)).toBe(true);
-    const before = readFileSync(PNG_PATH);
-    const shaBefore = createHash("sha256").update(before).digest("hex");
-    // Rebuild via the same tool; must produce identical bytes
-    const res = spawnSync("bun", ["run", "social-preview:build"], {
+    // Determinism is checked by building twice on the same platform and comparing, not vs committed Windows artifact
+    const res1 = spawnSync("bun", ["run", "social-preview:build"], {
       cwd: PRODUCT_ROOT,
       encoding: "utf8",
       timeout: 60_000,
     });
-    expect(res.status).toBe(0);
-    const after = readFileSync(PNG_PATH);
-    const shaAfter = createHash("sha256").update(after).digest("hex");
-    expect(shaAfter).toBe(shaBefore);
+    expect(res1.status).toBe(0);
+    const first = readFileSync(PNG_PATH);
+    const shaFirst = createHash("sha256").update(first).digest("hex");
+    const res2 = spawnSync("bun", ["run", "social-preview:build"], {
+      cwd: PRODUCT_ROOT,
+      encoding: "utf8",
+      timeout: 60_000,
+    });
+    expect(res2.status).toBe(0);
+    const second = readFileSync(PNG_PATH);
+    const shaSecond = createHash("sha256").update(second).digest("hex");
+    expect(shaSecond).toBe(shaFirst);
     // Also double-check dimensions after rebuild
-    const { w, h } = pngDimensions(after);
+    const { w, h } = pngDimensions(second);
     expect(w).toBe(WIDTH);
     expect(h).toBe(HEIGHT);
-    expect(after.length).toBeLessThan(ONE_MIB);
+    expect(second.length).toBeLessThan(ONE_MIB);
   });
 
   test("happy — no old brand/unqualified claim in committed image source and valid OG URL", () => {

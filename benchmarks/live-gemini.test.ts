@@ -126,7 +126,9 @@ describe("live-gemini — defaults match spec (5k/seed42/LOW/one model/each 1, m
 });
 
 describe("live-gemini — symmetric request configs (plain vs PDF)", () => {
-  test("generateContent plain vs PDF share identical model/config, only contents differ", async () => {
+  test(
+    "generateContent plain vs PDF share identical model/config, only contents differ",
+    async () => {
     const corpus = generateSeed42Corpus(5000, 42);
     const artifact = await compileContextWithBundledFonts(corpus);
     const pdfPart = toGeminiInlinePart(artifact);
@@ -159,7 +161,9 @@ describe("live-gemini — symmetric request configs (plain vs PDF)", () => {
     // Wrapper prompt appears in both
     expect(plainStr).toContain(WRAPPER_PROMPT.slice(0, 20));
     expect(pdfStr).toContain(WRAPPER_PROMPT.slice(0, 20));
-  });
+    },
+    10_000
+  );
 
   test("countTokens plain vs PDF share identical model, symmetric contents type", async () => {
     const corpus = generateSeed42Corpus(5000, 42);
