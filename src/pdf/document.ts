@@ -47,6 +47,7 @@ export async function withPdfDocument<T>(
   const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
   checkAborted(options?.signal);
   let task: PDFDocumentLoadingTask | undefined;
+  let result: T;
   try {
     let doc: PDFDocumentProxy;
     try {
@@ -83,7 +84,7 @@ export async function withPdfDocument<T>(
         "Malformed PDF: no pages"
       );
     }
-    return await read(doc);
+    result = await read(doc);
   } finally {
     // The loading task owns resources even when its promise rejects. Await cleanup
     // so asynchronous failures cannot escape as unhandled rejections.
@@ -93,4 +94,8 @@ export async function withPdfDocument<T>(
       // Best effort: cleanup must not replace the extraction result or typed error.
     }
   }
+  // Only a successful read reaches this point. Honor cancellation during cleanup
+  // without replacing a primary load/extraction error already propagating above.
+  checkAborted(options?.signal);
+  return result;
 }

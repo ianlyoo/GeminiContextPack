@@ -26,6 +26,14 @@ function stubDocument() {
 
 afterEach(() => restoreDocument());
 
+function deferred() {
+  let resolve = (): void => {};
+  const promise = new Promise<void>((done) => {
+    resolve = done;
+  });
+  return { promise, resolve };
+}
+
 describe("PDF extraction resource lifecycle", () => {
   test("verification reads page metadata from one document without changing the public report", async () => {
     const { doc, open } = stubDocument();
@@ -55,6 +63,50 @@ describe("PDF extraction resource lifecycle", () => {
     });
     expect(await extractCanonicalSource(bytes)).toBe("fixture source");
     expect(cleaned).toBe(true);
+    expect(destroy).toHaveBeenCalledTimes(1);
+  });
+
+  test("cancellation during deferred cleanup prevents successful verification", async () => {
+    const { destroy } = stubDocument();
+    const cleanupStarted = deferred();
+    const finishCleanup = deferred();
+    const controller = new AbortController();
+    destroy.mockImplementation(async () => {
+      cleanupStarted.resolve();
+      await finishCleanup.promise;
+    });
+
+    const verification = verifyPdf(bytes, "fixture source", { signal: controller.signal });
+    await cleanupStarted.promise;
+    controller.abort();
+    finishCleanup.resolve();
+
+    await expect(verification).rejects.toMatchObject({ code: "ABORTED" });
+    expect(destroy).toHaveBeenCalledTimes(1);
+  });
+
+  test("cancellation and rejection during deferred cleanup preserve the primary extraction error", async () => {
+    const { doc, destroy } = stubDocument();
+    const cleanupStarted = deferred();
+    const finishCleanup = deferred();
+    const controller = new AbortController();
+    doc.getPage.mockRejectedValue(new Error("fixture page failure"));
+    destroy.mockImplementation(async () => {
+      cleanupStarted.resolve();
+      await finishCleanup.promise;
+      throw new Error("fixture cleanup failure");
+    });
+
+    const verification = verifyPdf(bytes, "fixture source", { signal: controller.signal });
+    await cleanupStarted.promise;
+    controller.abort();
+    finishCleanup.resolve();
+
+    await expect(verification).rejects.toMatchObject({
+      code: "MALFORMED_PDF",
+      message: "Malformed PDF: page 1 text extraction failed: fixture page failure",
+      details: { reason: "fixture page failure" },
+    });
     expect(destroy).toHaveBeenCalledTimes(1);
   });
 
