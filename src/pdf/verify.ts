@@ -6,7 +6,7 @@
 import { canonicalize, hashCanonical } from "../canonicalization.js";
 import { ContextPackError } from "../errors.js";
 import { CANONICALIZATION_ID, type VerificationReport } from "../types.js";
-import { extractCanonicalSource, MAX_PAGES, MAX_PDF_BYTES } from "./extract.js";
+import { extractPdfContent, MAX_PAGES, MAX_PDF_BYTES } from "./extract.js";
 
 export { MAX_PAGES, MAX_PDF_BYTES };
 
@@ -25,6 +25,15 @@ export async function verifyPdf(
   expectedSource: string,
   options?: VerifyPdfOptions
 ): Promise<VerificationReport> {
+  return (await verifyPdfWithMetadata(pdfBytes, expectedSource, options)).report;
+}
+
+/** Internal CLI path: keep page metadata alongside the unchanged public report. */
+export async function verifyPdfWithMetadata(
+  pdfBytes: Uint8Array,
+  expectedSource: string,
+  options?: VerifyPdfOptions
+): Promise<{ readonly report: VerificationReport; readonly pageCount: number }> {
   if (!(pdfBytes instanceof Uint8Array)) {
     throw new ContextPackError(
       { code: "MALFORMED_PDF", details: { reason: "pdfBytes must be Uint8Array" } },
@@ -48,7 +57,10 @@ export async function verifyPdf(
   }
 
   // Extracted source via writer-independent pdfjs path (guards inside)
-  const extractedSource = await extractCanonicalSource(pdfBytes, options);
+  const { canonicalSource: extractedSource, pageCount } = await extractPdfContent(
+    pdfBytes,
+    options
+  );
 
   const expectedCanonical = canonicalize(expectedSource);
   const expectedHash = hashCanonical(expectedCanonical);
@@ -59,12 +71,15 @@ export async function verifyPdf(
     expectedHash === extractedHash ? "verified" : "mismatch";
 
   return {
-    status,
-    canonicalizationId: CANONICALIZATION_ID,
-    expectedHash,
-    extractedHash,
-    expectedSource: expectedCanonical,
-    extractedSource,
+    pageCount,
+    report: {
+      status,
+      canonicalizationId: CANONICALIZATION_ID,
+      expectedHash,
+      extractedHash,
+      expectedSource: expectedCanonical,
+      extractedSource,
+    },
   };
 }
 
