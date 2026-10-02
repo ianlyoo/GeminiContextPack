@@ -21,8 +21,8 @@ import { parseArgs } from "node:util";
 import { hashCanonical } from "./canonicalization.js";
 import { ContextPackError } from "./errors.js";
 import { compileContextWithBundledFonts } from "./fonts/node-loader.js";
-import { extractCanonicalSource } from "./pdf/extract.js";
-import { verifyPdf } from "./pdf/verify.js";
+import { extractPdfContent } from "./pdf/extract.js";
+import { verifyPdfWithMetadata } from "./pdf/verify.js";
 import { CANONICALIZATION_ID } from "./types.js";
 
 const VERSION = "0.1.0";
@@ -125,34 +125,6 @@ async function withSuppressedPdfjs<T>(fn: () => Promise<T>): Promise<T> {
     console.log = origLog;
     console.error = origError;
   }
-}
-
-async function getPdfPageCount(pdfBytes: Uint8Array): Promise<number> {
-  return withSuppressedPdfjs(async () => {
-    const mod = (await import("pdfjs-dist/legacy/build/pdf.mjs")) as unknown as {
-      getDocument: (src: unknown) => {
-        promise: Promise<{ numPages: number; destroy: () => void }>;
-      };
-    };
-    const data = new Uint8Array(pdfBytes);
-    let doc: { numPages: number; destroy: () => void } | null = null;
-    try {
-      const task = mod.getDocument({
-        data,
-        disableWorker: true,
-        isEvalSupported: false,
-      } as unknown as Record<string, unknown>);
-      const loaded = (await task.promise) as unknown as { numPages: number; destroy: () => void };
-      doc = loaded;
-      return loaded.numPages;
-    } finally {
-      try {
-        doc?.destroy();
-      } catch {
-        // ignore
-      }
-    }
-  });
 }
 
 async function handleCompile(rawArgs: string[]): Promise<void> {
@@ -320,9 +292,10 @@ async function handleVerify(rawArgs: string[]): Promise<void> {
   }
 
   try {
-    const report = await withSuppressedPdfjs(() => verifyPdf(pdfBytes, expectedSource));
+    const { report, pageCount } = await withSuppressedPdfjs(() =>
+      verifyPdfWithMetadata(pdfBytes, expectedSource)
+    );
     if (report.status === "verified") {
-      const pc = await getPdfPageCount(pdfBytes).catch(() => undefined);
       emitSuccess({
         ok: true,
         command: "verify",
@@ -330,7 +303,7 @@ async function handleVerify(rawArgs: string[]): Promise<void> {
         canonicalizationId: report.canonicalizationId,
         expectedHash: report.expectedHash,
         extractedHash: report.extractedHash,
-        pageCount: pc,
+        pageCount,
         bytes: pdfBytes.length,
       });
     } else {
@@ -396,9 +369,10 @@ async function handleInspect(rawArgs: string[]): Promise<void> {
   }
 
   try {
-    const extractedSource = await withSuppressedPdfjs(() => extractCanonicalSource(pdfBytes));
+    const { canonicalSource: extractedSource, pageCount } = await withSuppressedPdfjs(() =>
+      extractPdfContent(pdfBytes)
+    );
     const extractedHash = hashCanonical(extractedSource);
-    const pageCount = await getPdfPageCount(pdfBytes);
     emitSuccess({
       ok: true,
       command: "inspect",

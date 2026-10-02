@@ -80,7 +80,8 @@ src/
   pdf/format-font.ts    # Type3 format font + ToUnicode
   pdf/runs.ts           # run segmentation
   pdf/render.ts         # pdf-lib + fontkit subsetting, ActualText per line, fixed dates
-  pdf/extract.ts        # pdfjs-dist legacy, draw-order join, EOL stripped, 64MiB/32-page guard
+  pdf/document.ts       # lazy pdfjs-dist loading, 64MiB/32-page guards, awaited task cleanup
+  pdf/extract.ts        # draw-order join, EOL stripping, canonical source and page metadata in one pass
   pdf/verify.ts         # SHA equality decides verified; strict variant throws INTEGRITY_MISMATCH
   gemini/inline-part.ts # toGeminiInlinePart — verified artifact only → {inlineData:{mimeType,data}}
   gemini/usage.ts       # normalizeGeminiUsage — snake/camel tolerant, provenance-bearing
@@ -133,7 +134,7 @@ flowchart LR
 - Transport is JSON `{v, content}` reversible for newlines/backslashes/quotes/control/bidi/ZWJ/CJK/emoji; truncated or malformed JSON throws `INVALID_TRANSPORT`/`MALFORMED_PDF`.
 - Coverage/layout: per-codepoint font coverage (primary Noto Sans KR vs emoji vs zero-width format), word-aware wrapping (55% early-break, 140.07pt column width), adaptive density selects largest fitting profile within `pageBudget` default 1 (max 32) and 64MiB.
 - Rendering: ordered column drawing left→right top→bottom, `pdf-lib` + `fontkit` subsetting, line-level `ActualText` via BDC Span, zero-width Type3 format font with Differences/CMap, fixed CreationDate/ModDate `2023-01-01T00:00:00.000Z` and `useObjectStreams:false` for byte stability, producer `gemini-context-pack`.
-- Verification: `pdfjs-dist` (legacy, `disableWorker:true`, `isEvalSupported:false`, cloned buffer) joins `textContent.items[].str` in draw order, strips extractor-added `\r\n/\r/\n`, decodes transport, hashes canonical source; only SHA equality yields `verified`. Limits: `64MiB`, `32 pages` each throw `PDF_LIMIT_EXCEEDED` with typed limit string; malformed data throws `MALFORMED_PDF`; signal abort throws `ABORTED`.
+- Verification: `pdfjs-dist` (legacy, `disableWorker:true`, `isEvalSupported:false`, cloned buffer) joins `textContent.items[].str` in draw order, strips extractor-added `\r\n/\r/\n`, decodes transport, hashes canonical source; only SHA equality yields `verified`. Limits: `64MiB`, `32 pages` each throw `PDF_LIMIT_EXCEEDED` with typed limit string; malformed data throws `MALFORMED_PDF`; signal abort throws `ABORTED`, including an abort while the final page is being extracted. The loading task is destroyed and asynchronous cleanup is awaited on success and failure. CLI `inspect` and `verify` reuse the extraction's page count without reopening the PDF; the public verification report remains unchanged.
 
 Gemini adapter (narrow):
 
